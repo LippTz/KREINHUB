@@ -57,19 +57,27 @@ Content.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Content.BorderSizePixel = 0
 Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 8)
 
--- Tab Area
-local TabContainer = Instance.new("Frame", Content)
+-- Tab Container (Scroll)
+local TabContainer = Instance.new("ScrollingFrame", Content)
 TabContainer.Name = "TabContainer"
 TabContainer.Size = UDim2.new(0, 120, 1, 0)
 TabContainer.Position = UDim2.new(0, 0, 0, 0)
 TabContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 TabContainer.BorderSizePixel = 0
+TabContainer.ScrollBarThickness = 6
+TabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
+TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
 Instance.new("UICorner", TabContainer).CornerRadius = UDim.new(0, 8)
 
 local TabLayout = Instance.new("UIListLayout", TabContainer)
 TabLayout.Padding = UDim.new(0, 6)
 TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
+TabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	TabContainer.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y + 10)
+end)
+
+-- Page Container
 local PageContainer = Instance.new("Frame", Content)
 PageContainer.Name = "PageContainer"
 PageContainer.Position = UDim2.new(0, 130, 0, 0)
@@ -77,7 +85,7 @@ PageContainer.Size = UDim2.new(1, -130, 1, 0)
 PageContainer.BackgroundTransparency = 1
 PageContainer.ClipsDescendants = true
 
--- Minimize logic
+-- Minimize Logic
 local minimized = false
 local fullSize = UDim2.new(1, 0, 1, -45)
 local fullFrameSize = UDim2.new(0, 450, 0, 300)
@@ -103,16 +111,17 @@ Close.MouseButton1Click:Connect(function()
 	KreinGui:Destroy()
 end)
 
--- Core Logic
+-- Tab Logic
 local Tabs = {}
+local tabCount = 0
 
 local function CreateTab(tabName)
 	if Tabs[tabName] then return Tabs[tabName] end
+	tabCount += 1
 
 	local TabButton = Instance.new("TextButton", TabContainer)
 	TabButton.Text = tabName
 	TabButton.Size = UDim2.new(1, -10, 0, 30)
-	TabButton.Position = UDim2.new(0, 5, 0, 0)
 	TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	TabButton.TextColor3 = Color3.fromRGB(0, 255, 0)
 	TabButton.Font = Enum.Font.Code
@@ -120,7 +129,6 @@ local function CreateTab(tabName)
 	TabButton.AutoButtonColor = false
 	Instance.new("UICorner", TabButton).CornerRadius = UDim.new(0, 6)
 
-	-- ✅ Pakai ScrollingFrame
 	local Page = Instance.new("ScrollingFrame", PageContainer)
 	Page.Name = tabName
 	Page.Size = UDim2.new(1, 0, 1, 0)
@@ -128,13 +136,12 @@ local function CreateTab(tabName)
 	Page.ScrollBarThickness = 6
 	Page.ScrollingDirection = Enum.ScrollingDirection.Y
 	Page.CanvasSize = UDim2.new(0, 0, 0, 0)
-	Page.Visible = false
+	Page.Visible = (tabCount == 1)
 
 	local Layout = Instance.new("UIListLayout", Page)
 	Layout.Padding = UDim.new(0, 6)
 	Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	-- Auto update canvas size
 	Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		Page.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
 	end)
@@ -142,7 +149,9 @@ local function CreateTab(tabName)
 	Tabs[tabName] = Page
 
 	TabButton.MouseButton1Click:Connect(function()
-		for _, page in pairs(Tabs) do page.Visible = false end
+		for _, page in pairs(Tabs) do
+			page.Visible = false
+		end
 		Page.Visible = true
 	end)
 
@@ -179,7 +188,7 @@ local function AddToggle(tab, text, default, callback)
 	end)
 end
 
--- Export
+-- Exported API
 _G.KreinHub = {
 	CreateTab = CreateTab,
 	AddButton = AddButton,
