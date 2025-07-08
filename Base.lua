@@ -117,7 +117,6 @@ local tabCount = 0
 
 local function CreateTab(tabName)
 	if Tabs[tabName] then return Tabs[tabName] end
-	tabCount += 1
 
 	local TabButton = Instance.new("TextButton", TabContainer)
 	TabButton.Text = tabName
@@ -136,12 +135,16 @@ local function CreateTab(tabName)
 	Page.ScrollBarThickness = 6
 	Page.ScrollingDirection = Enum.ScrollingDirection.Y
 	Page.CanvasSize = UDim2.new(0, 0, 0, 0)
-	Page.Visible = (tabCount == 1)
+	Page.Visible = false
+
+	-- ✅ FIX: Tampilkan tab pertama otomatis
+	if not next(Tabs) then
+		Page.Visible = true
+	end
 
 	local Layout = Instance.new("UIListLayout", Page)
 	Layout.Padding = UDim.new(0, 6)
 	Layout.SortOrder = Enum.SortOrder.LayoutOrder
-
 	Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		Page.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
 	end)
