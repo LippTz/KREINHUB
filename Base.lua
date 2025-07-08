@@ -1,6 +1,5 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 -- GUI Setup
@@ -17,9 +16,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
-
-local Corner = Instance.new("UICorner", MainFrame)
-Corner.CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
 -- Title
 local Title = Instance.new("TextLabel", MainFrame)
@@ -58,18 +55,16 @@ Content.Position = UDim2.new(0, 0, 0, 40)
 Content.Size = UDim2.new(1, 0, 1, -45)
 Content.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 Content.BorderSizePixel = 0
-local ContentCorner = Instance.new("UICorner", Content)
-ContentCorner.CornerRadius = UDim.new(0, 8)
+Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 8)
 
--- Tab Layout
+-- Tab Area
 local TabContainer = Instance.new("Frame", Content)
 TabContainer.Name = "TabContainer"
 TabContainer.Size = UDim2.new(0, 120, 1, 0)
 TabContainer.Position = UDim2.new(0, 0, 0, 0)
 TabContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 TabContainer.BorderSizePixel = 0
-local TabCorner = Instance.new("UICorner", TabContainer)
-TabCorner.CornerRadius = UDim.new(0, 8)
+Instance.new("UICorner", TabContainer).CornerRadius = UDim.new(0, 8)
 
 local TabLayout = Instance.new("UIListLayout", TabContainer)
 TabLayout.Padding = UDim.new(0, 6)
@@ -82,7 +77,7 @@ PageContainer.Size = UDim2.new(1, -130, 1, 0)
 PageContainer.BackgroundTransparency = 1
 PageContainer.ClipsDescendants = true
 
--- Minimize Logic
+-- Minimize logic
 local minimized = false
 local fullSize = UDim2.new(1, 0, 1, -45)
 local fullFrameSize = UDim2.new(0, 450, 0, 300)
@@ -92,27 +87,15 @@ Minimize.MouseButton1Click:Connect(function()
 	minimized = not minimized
 
 	if minimized then
-		TweenService:Create(Content, TweenInfo.new(0.25), {
-			Size = UDim2.new(1, 0, 0, 0)
-		}):Play()
-
+		TweenService:Create(Content, TweenInfo.new(0.25), { Size = UDim2.new(1, 0, 0, 0) }):Play()
 		wait(0.25)
 		Content.Visible = false
-
-		TweenService:Create(MainFrame, TweenInfo.new(0.25), {
-			Size = minimizedFrameSize
-		}):Play()
+		TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = minimizedFrameSize }):Play()
 	else
-		TweenService:Create(MainFrame, TweenInfo.new(0.25), {
-			Size = fullFrameSize
-		}):Play()
-
+		TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = fullFrameSize }):Play()
 		wait(0.25)
 		Content.Visible = true
-
-		TweenService:Create(Content, TweenInfo.new(0.25), {
-			Size = fullSize
-		}):Play()
+		TweenService:Create(Content, TweenInfo.new(0.25), { Size = fullSize }):Play()
 	end
 end)
 
@@ -120,7 +103,7 @@ Close.MouseButton1Click:Connect(function()
 	KreinGui:Destroy()
 end)
 
--- Functional Tab System
+-- Core Logic
 local Tabs = {}
 
 local function CreateTab(tabName)
@@ -135,25 +118,31 @@ local function CreateTab(tabName)
 	TabButton.Font = Enum.Font.Code
 	TabButton.TextSize = 18
 	TabButton.AutoButtonColor = false
-	local Corner = Instance.new("UICorner", TabButton)
-	Corner.CornerRadius = UDim.new(0, 6)
+	Instance.new("UICorner", TabButton).CornerRadius = UDim.new(0, 6)
 
-	local Page = Instance.new("Frame", PageContainer)
+	-- ✅ Pakai ScrollingFrame
+	local Page = Instance.new("ScrollingFrame", PageContainer)
 	Page.Name = tabName
 	Page.Size = UDim2.new(1, 0, 1, 0)
 	Page.BackgroundTransparency = 1
+	Page.ScrollBarThickness = 6
+	Page.ScrollingDirection = Enum.ScrollingDirection.Y
+	Page.CanvasSize = UDim2.new(0, 0, 0, 0)
 	Page.Visible = false
 
 	local Layout = Instance.new("UIListLayout", Page)
 	Layout.Padding = UDim.new(0, 6)
 	Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
+	-- Auto update canvas size
+	Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		Page.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
+	end)
+
 	Tabs[tabName] = Page
 
 	TabButton.MouseButton1Click:Connect(function()
-		for name, page in pairs(Tabs) do
-			page.Visible = false
-		end
+		for _, page in pairs(Tabs) do page.Visible = false end
 		Page.Visible = true
 	end)
 
@@ -168,8 +157,7 @@ local function AddButton(tab, text, callback)
 	button.TextColor3 = Color3.fromRGB(0, 255, 0)
 	button.Font = Enum.Font.Code
 	button.TextSize = 16
-	local corner = Instance.new("UICorner", button)
-	corner.CornerRadius = UDim.new(0, 6)
+	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 6)
 	button.MouseButton1Click:Connect(callback)
 end
 
@@ -182,8 +170,8 @@ local function AddToggle(tab, text, default, callback)
 	toggle.Font = Enum.Font.Code
 	toggle.TextSize = 16
 	local state = default
-	local corner = Instance.new("UICorner", toggle)
-	corner.CornerRadius = UDim.new(0, 6)
+	Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 6)
+
 	toggle.MouseButton1Click:Connect(function()
 		state = not state
 		toggle.Text = text .. ": " .. (state and "ON" or "OFF")
@@ -191,7 +179,7 @@ local function AddToggle(tab, text, default, callback)
 	end)
 end
 
--- Export to global
+-- Export
 _G.KreinHub = {
 	CreateTab = CreateTab,
 	AddButton = AddButton,
