@@ -191,9 +191,57 @@ local function AddToggle(tab, text, default, callback)
 	end)
 end
 
+local function AddDropdown(tab, title, options, default, callback)
+	local dropdown = Instance.new("TextButton", tab)
+	dropdown.Size = UDim2.new(1, -10, 0, 30)
+	dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	dropdown.TextColor3 = Color3.fromRGB(0, 255, 0)
+	dropdown.Font = Enum.Font.Code
+	dropdown.TextSize = 16
+	Instance.new("UICorner", dropdown).CornerRadius = UDim.new(0, 6)
+
+	local current = default or options[1]
+	dropdown.Text = title .. ": " .. current
+
+	local open = false
+	local buttons = {}
+
+	dropdown.MouseButton1Click:Connect(function()
+		open = not open
+		for _, btn in ipairs(buttons) do
+			btn.Visible = open
+		end
+	end)
+
+	for _, opt in ipairs(options) do
+		local btn = Instance.new("TextButton", tab)
+		btn.Size = UDim2.new(1, -20, 0, 25)
+		btn.Text = opt
+		btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+		btn.Font = Enum.Font.Code
+		btn.TextSize = 14
+		btn.Visible = false
+		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+
+		btn.MouseButton1Click:Connect(function()
+			current = opt
+			dropdown.Text = title .. ": " .. current
+			open = false
+			for _, b in ipairs(buttons) do
+				b.Visible = false
+			end
+			callback(opt)
+		end)
+
+		table.insert(buttons, btn)
+	end
+end
+
 -- Exported API
 _G.KreinHub = {
 	CreateTab = CreateTab,
 	AddButton = AddButton,
 	AddToggle = AddToggle,
+	AddDropdown = AddDropdown,
 }
