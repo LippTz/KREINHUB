@@ -323,3 +323,50 @@ _G.KreinHub = {
 	AddDropdown = AddDropdown,
 	AddDropdownSection = AddDropdownSection, -- ✅ Tambahkan ini
 }
+
+-- ✅ Changelog Tab Internal (Tidak bisa diubah dari luar)
+do
+	local changelogText = [[
+📢 KREINHUB CHANGELOG
+
+🟢 v1.0.0 - 2025-07-08
+• Rilis perdana KreinHub dengan sistem modular
+• Tab dan page auto layout
+• Sistem Button & Toggle siap pakai
+• Dropdown berisi sub-toggle dan button (collapsible)
+• UI hacker style dengan tema gelap
+
+🧠 Sistem Eksport API
+• Loader luar bisa pakai: CreateTab, AddButton, AddToggle, AddDropdown
+
+🔒 Fitur Terproteksi
+• Tab Changelog tidak bisa diubah dari luar
+• Sistem Minimize dan Close dengan animasi Tween
+
+⚙️ Framework Stabil
+• Ukuran tab dan scroll otomatis
+• GUI auto resize saat minimize
+• Corner dan font tersinkron
+]]
+
+	local changelogTab = CreateTab("📜 Changelog")
+
+	local changelogBox = Instance.new("TextLabel", changelogTab)
+	changelogBox.Size = UDim2.new(1, -10, 0, 220)
+	changelogBox.Text = changelogText
+	changelogBox.TextWrapped = true
+	changelogBox.TextYAlignment = Enum.TextYAlignment.Top
+	changelogBox.TextXAlignment = Enum.TextXAlignment.Left
+	changelogBox.TextColor3 = Color3.fromRGB(200, 255, 200)
+	changelogBox.Font = Enum.Font.Code
+	changelogBox.TextSize = 15
+	changelogBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	changelogBox.BorderSizePixel = 0
+	changelogBox.ClipsDescendants = true
+	changelogBox.TextTruncate = Enum.TextTruncate.AtEnd
+	Instance.new("UICorner", changelogBox).CornerRadius = UDim.new(0, 6)
+
+	local layout = Instance.new("UIListLayout", changelogTab)
+	layout.Padding = UDim.new(0, 6)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+end
