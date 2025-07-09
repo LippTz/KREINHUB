@@ -96,12 +96,12 @@ Minimize.MouseButton1Click:Connect(function()
 
 	if minimized then
 		TweenService:Create(Content, TweenInfo.new(0.25), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-		wait(0.25)
+		wait(0.15)
 		Content.Visible = false
 		TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = minimizedFrameSize }):Play()
 	else
 		TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = fullFrameSize }):Play()
-		wait(0.25)
+		wait(0.15)
 		Content.Visible = true
 		TweenService:Create(Content, TweenInfo.new(0.25), { Size = fullSize }):Play()
 	end
@@ -247,7 +247,7 @@ local function AddDropdownSection(tab, title)
 
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Size = UDim2.new(1, -10, 0, 30)
-	toggleBtn.Position = UDim2.new(0, 5, 0, 0)
+	toggleBtn.Position = UDim2.new(0, 0, 0, 0)
 	toggleBtn.Text = "▼ " .. title
 	toggleBtn.Font = Enum.Font.Code
 	toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
@@ -280,8 +280,8 @@ local function AddDropdownSection(tab, title)
 
 	function sectionAPI:AddButton(text, callback)
 		local btn = Instance.new("TextButton")
-		btn.Size = UDim2.new(1, -20, 0, 30)
-		btn.Position = UDim2.new(0, 10, 0, 0)
+		btn.Size = UDim2.new(1, -10, 0, 30)
+		btn.Position = UDim2.new(0, 0, 0, 0)
 		btn.Text = text
 		btn.Font = Enum.Font.Code
 		btn.TextColor3 = Color3.new(1, 1, 1)
@@ -294,11 +294,11 @@ local function AddDropdownSection(tab, title)
 
 	function sectionAPI:AddToggle(text, default, callback)
 		local toggle = Instance.new("TextButton")
-		toggle.Size = UDim2.new(1, -20, 0, 30)
-		toggle.Position = UDim2.new(0, 10, 0, 0)
+		toggle.Size = UDim2.new(1, -10, 0, 30)
+		toggle.Position = UDim2.new(0, 0, 0, 0)
 		toggle.Font = Enum.Font.Code
 		toggle.TextColor3 = Color3.new(1, 1, 1)
-		toggle.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 		toggle.TextSize = 14
 		toggle.Parent = contentFrame
 		Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 6)
