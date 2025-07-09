@@ -1,4 +1,5 @@
 -- ✅ Ambil konfigurasi dari Key.lua eksternal
+if _G.KREIN_KEY_VERIFIED then return end
 local keyConfig = loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Key.lua"))()
 
 local Players = game:GetService("Players")
@@ -21,7 +22,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.Position = UDim2.new(0, 0, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "🔐 KreinHub Access Key"
+Title.Text = "KreinHub Access Key"
 Title.TextColor3 = Color3.fromRGB(0, 255, 0)
 Title.Font = Enum.Font.Code
 Title.TextSize = 20
@@ -74,11 +75,13 @@ end)
 createButton("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
 	if Input.Text == keyConfig.CorrectKey then
 		Notif.Text = "✅ Access Granted!"
+		_G.KREIN_KEY_VERIFIED = true -- ✅ Tandai bahwa key sudah diverifikasi
+
 		wait(0.5)
 		KeyGui:Destroy()
 
-		-- Setelah lolos key, tampilkan GUI utama
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))() -- Atau isi GUI utama kamu langsung di bawah
+		-- ✅ Load GUI utama hanya sekali
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/username/repo/main/Base.lua"))()
 	else
 		Notif.Text = "❌ Key is invalid!"
 	end
