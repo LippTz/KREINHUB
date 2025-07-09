@@ -38,7 +38,7 @@ Notif.TextSize = 14
 Notif.Text = "Enter your key to access KreinHub"
 Notif.TextXAlignment = Enum.TextXAlignment.Center
 
-local Input = Instance.new("Enter Key Here", Frame)
+local Input = Instance.new("TextBox", Frame)
 Input.Size = UDim2.new(1, -40, 0, 30)
 Input.Position = UDim2.new(0, 20, 0, 70)
 Input.PlaceholderText = "Enter Key Here"
