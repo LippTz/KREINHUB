@@ -238,68 +238,70 @@ local function AddDropdown(tab, title, options, default, callback)
 	end
 end
 
-function KreinHub.AddDropdownSection(tab, title)
+local function AddDropdownSection(tab, title)
 	local container = Instance.new("Frame")
 	container.BackgroundTransparency = 1
 	container.Size = UDim2.new(1, 0, 0, 0)
 	container.AutomaticSize = Enum.AutomaticSize.Y
-	container.Parent = tab.List -- PASTIKAN tab.List adalah UIListLayout container utama tab
+	container.Parent = tab
 
 	local toggleBtn = Instance.new("TextButton")
-	toggleBtn.Size = UDim2.new(1, 0, 0, 30)
-	toggleBtn.Text = "▼  " .. title
-	toggleBtn.Font = Enum.Font.GothamBold
-	toggleBtn.TextColor3 = Color3.new(1, 1, 1)
-	toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	toggleBtn.TextSize = 14
+	toggleBtn.Size = UDim2.new(1, -10, 0, 30)
+	toggleBtn.Position = UDim2.new(0, 5, 0, 0)
+	toggleBtn.Text = "▼ " .. title
+	toggleBtn.Font = Enum.Font.Code
+	toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	toggleBtn.TextSize = 16
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = container
-	Instance.new("UICorner", toggleBtn)
+	Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
 
 	local contentFrame = Instance.new("Frame")
 	contentFrame.BackgroundTransparency = 1
 	contentFrame.Size = UDim2.new(1, 0, 0, 0)
+	contentFrame.Position = UDim2.new(0, 0, 0, 30)
 	contentFrame.AutomaticSize = Enum.AutomaticSize.Y
 	contentFrame.Visible = false
 	contentFrame.Parent = container
 
-	local layout = Instance.new("UIListLayout")
+	local layout = Instance.new("UIListLayout", contentFrame)
 	layout.Padding = UDim.new(0, 6)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = contentFrame
 
 	local expanded = false
 	toggleBtn.MouseButton1Click:Connect(function()
 		expanded = not expanded
 		contentFrame.Visible = expanded
-		toggleBtn.Text = (expanded and "▲  " or "▼  ") .. title
+		toggleBtn.Text = (expanded and "▲ " or "▼ ") .. title
 	end)
 
-	-- API Section Return
 	local sectionAPI = {}
 
 	function sectionAPI:AddButton(text, callback)
 		local btn = Instance.new("TextButton")
-		btn.Size = UDim2.new(1, 0, 0, 30)
+		btn.Size = UDim2.new(1, -20, 0, 30)
+		btn.Position = UDim2.new(0, 10, 0, 0)
 		btn.Text = text
-		btn.Font = Enum.Font.GothamBold
+		btn.Font = Enum.Font.Code
 		btn.TextColor3 = Color3.new(1, 1, 1)
-		btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 		btn.TextSize = 14
 		btn.Parent = contentFrame
-		Instance.new("UICorner", btn)
+		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 		btn.MouseButton1Click:Connect(callback)
 	end
 
 	function sectionAPI:AddToggle(text, default, callback)
 		local toggle = Instance.new("TextButton")
-		toggle.Size = UDim2.new(1, 0, 0, 30)
-		toggle.Font = Enum.Font.GothamBold
+		toggle.Size = UDim2.new(1, -20, 0, 30)
+		toggle.Position = UDim2.new(0, 10, 0, 0)
+		toggle.Font = Enum.Font.Code
 		toggle.TextColor3 = Color3.new(1, 1, 1)
 		toggle.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 		toggle.TextSize = 14
 		toggle.Parent = contentFrame
-		Instance.new("UICorner", toggle)
+		Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 6)
 
 		local state = default
 		toggle.Text = (state and "[ON] " or "[OFF] ") .. text
@@ -319,4 +321,5 @@ _G.KreinHub = {
 	AddButton = AddButton,
 	AddToggle = AddToggle,
 	AddDropdown = AddDropdown,
+	AddDropdownSection = AddDropdownSection, -- ✅ Tambahkan ini
 }
