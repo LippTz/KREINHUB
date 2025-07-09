@@ -1,79 +1,48 @@
-if _G.KREIN_KEY_VERIFIED then return end
-local config = loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Key.lua"))()
-local player = game:GetService("Players").LocalPlayer
-local gui = Instance.new("ScreenGui", game.CoreGui)
+-- ✅ FILE 1: SystemKey.lua (UPLOAD ke GitHub)
+local HttpService = game:GetService("HttpService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 360, 0, 200)
-frame.Position = UDim2.new(0.5, -180, 0.5, -100)
-frame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-frame.Active = true
-frame.Draggable = true
-Instance.new("UICorner", frame)
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "KeySystemUI"
+ScreenGui.ResetOnSpawn = false
 
-local title = Instance.new("TextLabel", frame)
-title.Text = "KreinHub Access Key"
-title.Size = UDim2.new(1, 0, 0, 30)
-title.TextColor3 = Color3.fromRGB(0, 255, 0)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.Code
-title.TextSize = 20
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 300, 0, 150)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.BorderSizePixel = 0
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
 
-local notif = Instance.new("TextLabel", frame)
-notif.Size = UDim2.new(1, -20, 0, 20)
-notif.Position = UDim2.new(0, 10, 0, 40)
-notif.BackgroundTransparency = 1
-notif.Text = "Enter your key to access KreinHub"
-notif.TextColor3 = Color3.new(1, 1, 1)
-notif.Font = Enum.Font.Code
-notif.TextSize = 14
+local Box = Instance.new("TextBox", Frame)
+Box.PlaceholderText = "Enter Key Here..."
+Box.Size = UDim2.new(0.9, 0, 0, 30)
+Box.Position = UDim2.new(0.05, 0, 0.3, 0)
+Box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+Box.Font = Enum.Font.Code
+Box.TextSize = 16
+Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 6)
 
-local input = Instance.new("TextBox", frame)
-input.PlaceholderText = "Enter Key Here"
-input.Size = UDim2.new(1, -40, 0, 30)
-input.Position = UDim2.new(0, 20, 0, 70)
-input.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-input.TextColor3 = Color3.new(1, 1, 1)
-input.Font = Enum.Font.Code
-input.TextSize = 16
-Instance.new("UICorner", input)
+local Button = Instance.new("TextButton", Frame)
+Button.Text = "Verify"
+Button.Size = UDim2.new(0.9, 0, 0, 30)
+Button.Position = UDim2.new(0.05, 0, 0.65, 0)
+Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+Button.Font = Enum.Font.Code
+Button.TextSize = 16
+Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
 
-local function button(txt, pos, callback)
-    local btn = Instance.new("TextButton", frame)
-    btn.Text = txt
-    btn.Size = UDim2.new(0.3, 0, 0, 30)
-    btn.Position = pos
-    btn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    btn.TextColor3 = Color3.fromRGB(0, 255, 0)
-    btn.Font = Enum.Font.Code
-    btn.TextSize = 14
-    Instance.new("UICorner", btn)
-    btn.MouseButton1Click:Connect(callback)
-end
+local ValidKey = "krein123"
 
-button("🌐 GitHub", UDim2.new(0.05, 0, 0, 120), function()
-    setclipboard(config.GitHubURL)
-    notif.Text = "✅ GitHub link copied!"
-end)
-
-button("🔑 Get Key", UDim2.new(0.35, 0, 0, 120), function()
-    setclipboard(config.KeyURL)
-    notif.Text = "✅ Key page copied!"
-end)
-
-button("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
-    if input.Text == config.CorrectKey then
-        notif.Text = "✅ Access Granted!"
-        --✅ Setelah berhasil verifikasi key:
-_G.KREIN_KEY_VERIFIED = true
-
--- Load dan jalankan Base.lua
-local Krein = loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))()
-Krein.Show() -- WAJIB! biar GUI-nya tampil
-
--- Simpan modul ke global biar bisa dipakai Loader
-_G.KREIN_API = Krein
+Button.MouseButton1Click:Connect(function()
+    if Box.Text == ValidKey then
+        _G.KREIN_KEY_VERIFIED = true
+        ScreenGui:Destroy()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))()
     else
-        notif.Text = "❌ Key is invalid!"
+        Box.Text = "INVALID KEY!"
     end
 end)
