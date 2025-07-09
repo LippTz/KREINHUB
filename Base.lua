@@ -1,3 +1,4 @@
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
@@ -370,3 +371,5 @@ do
 	layout.Padding = UDim.new(4, 6)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 end
+
+return _G.KreinHub
