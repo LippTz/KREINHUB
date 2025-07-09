@@ -1,3 +1,100 @@
+-- ✅ KreinHub Key System
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local KeyGui = Instance.new("ScreenGui", game.CoreGui)
+KeyGui.Name = "KreinHub_KeyUI"
+KeyGui.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame", KeyGui)
+Frame.Size = UDim2.new(0, 360, 0, 200)
+Frame.Position = UDim2.new(0.5, -180, 0.5, -100)
+Frame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+Instance.new("UICorner", Frame)
+
+-- Title
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Position = UDim2.new(0, 0, 0, 5)
+Title.BackgroundTransparency = 1
+Title.Text = "KreinHub Access Key"
+Title.TextColor3 = Color3.fromRGB(0, 255, 0)
+Title.Font = Enum.Font.Code
+Title.TextSize = 20
+Title.TextXAlignment = Enum.TextXAlignment.Center
+
+-- Notif
+local Notif = Instance.new("TextLabel", Frame)
+Notif.Size = UDim2.new(1, -20, 0, 20)
+Notif.Position = UDim2.new(0, 10, 0, 40)
+Notif.BackgroundTransparency = 1
+Notif.TextColor3 = Color3.fromRGB(255, 255, 255)
+Notif.Font = Enum.Font.Code
+Notif.TextSize = 14
+Notif.Text = "Enter your key to access KreinHub"
+Notif.TextXAlignment = Enum.TextXAlignment.Center
+
+-- Input Key
+local Input = Instance.new("TextBox", Frame)
+Input.Size = UDim2.new(1, -40, 0, 30)
+Input.Position = UDim2.new(0, 20, 0, 70)
+Input.PlaceholderText = "Enter Key Here"
+Input.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Input.TextColor3 = Color3.new(1, 1, 1)
+Input.Font = Enum.Font.Code
+Input.TextSize = 16
+Instance.new("UICorner", Input)
+
+-- Config
+local GitHubURL = "https://github.com/KreinProject"
+local KeyURL = "https://kreinproject.xyz/getkey"
+local CorrectKey = "kreinhub-access"
+
+-- Buttons
+local function createButton(name, pos, callback)
+	local btn = Instance.new("TextButton", Frame)
+	btn.Size = UDim2.new(0.3, 0, 0, 30)
+	btn.Position = pos
+	btn.Text = name
+	btn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	btn.TextColor3 = Color3.fromRGB(0, 255, 0)
+	btn.Font = Enum.Font.Code
+	btn.TextSize = 14
+	Instance.new("UICorner", btn)
+	btn.MouseButton1Click:Connect(callback)
+end
+
+createButton("🌐 GitHub", UDim2.new(0.05, 0, 0, 120), function()
+	setclipboard(GitHubURL)
+	Notif.Text = "✅ GitHub link copied!"
+end)
+
+createButton("🔑 Get Key", UDim2.new(0.35, 0, 0, 120), function()
+	setclipboard(KeyURL)
+	Notif.Text = "✅ Key page copied!"
+end)
+
+createButton("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
+	if Input.Text == CorrectKey then
+		Notif.Text = "✅ Access Granted!"
+		wait(0.5)
+		KeyGui:Destroy()
+		loadstring(game:HttpGet("https://yourkreinhublink.lua"))() -- Ganti dengan link asli GUI-mu
+	else
+		Notif.Text = "❌ Key is invalid!"
+	end
+end)
+
+-- Configurable public API
+_G.KreinKeySystem = {
+	SetGitHub = function(link) GitHubURL = link end,
+	SetKeyURL = function(link) KeyURL = link end,
+	SetKey = function(key) CorrectKey = key end,
+}
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
