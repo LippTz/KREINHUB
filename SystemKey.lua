@@ -64,12 +64,15 @@ end)
 button("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
     if input.Text == config.CorrectKey then
         notif.Text = "✅ Access Granted!"
-        _G.KREIN_KEY_VERIFIED = true
-        wait(0.3)
-        gui:Destroy()
+        --✅ Setelah berhasil verifikasi key:
+_G.KREIN_KEY_VERIFIED = true
 
-        -- Load GUI utama
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))()
+-- Load dan jalankan Base.lua
+local Krein = loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))()
+Krein.Show() -- WAJIB! biar GUI-nya tampil
+
+-- Simpan modul ke global biar bisa dipakai Loader
+_G.KREIN_API = Krein
     else
         notif.Text = "❌ Key is invalid!"
     end
