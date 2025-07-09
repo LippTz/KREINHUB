@@ -89,21 +89,21 @@ PageContainer.ClipsDescendants = true
 local minimized = false
 local fullSize = UDim2.new(1, 0, 1, -45)
 local fullFrameSize = UDim2.new(0, 450, 0, 300)
-local minimizedFrameSize = UDim2.new(0, 450, 0, 40)
+local minimizedFrameSize = UDim2.new(0, 140, 0, 40)
 
 Minimize.MouseButton1Click:Connect(function()
 	minimized = not minimized
 
 	if minimized then
-		TweenService:Create(Content, TweenInfo.new(0.25), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+		TweenService:Create(Content, TweenInfo.new(0.15), { Size = UDim2.new(1, 0, 0, 0) }):Play()
 		wait(0.15)
 		Content.Visible = false
-		TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = minimizedFrameSize }):Play()
+		TweenService:Create(MainFrame, TweenInfo.new(0.15), { Size = minimizedFrameSize }):Play()
 	else
-		TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = fullFrameSize }):Play()
+		TweenService:Create(MainFrame, TweenInfo.new(0.15), { Size = fullFrameSize }):Play()
 		wait(0.15)
 		Content.Visible = true
-		TweenService:Create(Content, TweenInfo.new(0.25), { Size = fullSize }):Play()
+		TweenService:Create(Content, TweenInfo.new(0.15), { Size = fullSize }):Play()
 	end
 end)
 
@@ -165,7 +165,7 @@ local function AddButton(tab, text, callback)
 	local button = Instance.new("TextButton", tab)
 	button.Size = UDim2.new(1, -10, 0, 30)
 	button.Text = text
-	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	button.TextColor3 = Color3.fromRGB(0, 255, 0)
 	button.Font = Enum.Font.Code
 	button.TextSize = 16
@@ -217,7 +217,7 @@ local function AddDropdown(tab, title, options, default, callback)
 		local btn = Instance.new("TextButton", tab)
 		btn.Size = UDim2.new(1, -20, 0, 25)
 		btn.Text = opt
-		btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 		btn.TextColor3 = Color3.fromRGB(200, 200, 200)
 		btn.Font = Enum.Font.Code
 		btn.TextSize = 14
@@ -251,7 +251,7 @@ local function AddDropdownSection(tab, title)
 	toggleBtn.Text = "▼ " .. title
 	toggleBtn.Font = Enum.Font.Code
 	toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
-	toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	toggleBtn.TextSize = 16
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = container
@@ -284,8 +284,8 @@ local function AddDropdownSection(tab, title)
 		btn.Position = UDim2.new(0, 0, 0, 0)
 		btn.Text = text
 		btn.Font = Enum.Font.Code
-		btn.TextColor3 = Color3.new(1, 1, 1)
-		btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		btn.TextColor3 = Color3.new(0, 255, 0)
+		btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 		btn.TextSize = 14
 		btn.Parent = contentFrame
 		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
@@ -297,8 +297,8 @@ local function AddDropdownSection(tab, title)
 		toggle.Size = UDim2.new(1, -10, 0, 30)
 		toggle.Position = UDim2.new(0, 0, 0, 0)
 		toggle.Font = Enum.Font.Code
-		toggle.TextColor3 = Color3.new(1, 1, 1)
-		toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		toggle.TextColor3 = Color3.new(0, 255, 0)
+		toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 		toggle.TextSize = 14
 		toggle.Parent = contentFrame
 		Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 6)
