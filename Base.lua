@@ -89,7 +89,7 @@ PageContainer.ClipsDescendants = true
 local minimized = false
 local fullSize = UDim2.new(1, 0, 1, -45)
 local fullFrameSize = UDim2.new(0, 450, 0, 300)
-local minimizedFrameSize = UDim2.new(0, 140, 0, 40)
+local minimizedFrameSize = UDim2.new(0, 190, 0, 40)
 
 Minimize.MouseButton1Click:Connect(function()
 	minimized = not minimized
@@ -281,7 +281,7 @@ local function AddDropdownSection(tab, title)
 	function sectionAPI:AddButton(text, callback)
 		local btn = Instance.new("TextButton")
 		btn.Size = UDim2.new(1, -10, 0, 30)
-		btn.Position = UDim2.new(0, 0, 0, 10)
+		btn.Position = UDim2.new(0, 0, 0, 0)
 		btn.Text = text
 		btn.Font = Enum.Font.Code
 		btn.TextColor3 = Color3.new(0, 255, 0)
@@ -295,7 +295,7 @@ local function AddDropdownSection(tab, title)
 	function sectionAPI:AddToggle(text, default, callback)
 		local toggle = Instance.new("TextButton")
 		toggle.Size = UDim2.new(1, -10, 0, 30)
-		toggle.Position = UDim2.new(0, 0, 0, 20)
+		toggle.Position = UDim2.new(0, 0, 0, 0)
 		toggle.Font = Enum.Font.Code
 		toggle.TextColor3 = Color3.new(0, 255, 0)
 		toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
