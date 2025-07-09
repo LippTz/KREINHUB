@@ -81,7 +81,7 @@ createButton("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
 		KeyGui:Destroy()
 
 		-- ✅ Load GUI utama hanya sekali
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/username/repo/main/Base.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))()
 	else
 		Notif.Text = "❌ Key is invalid!"
 	end
