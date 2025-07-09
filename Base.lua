@@ -315,28 +315,14 @@ local function AddDropdownSection(tab, title)
 	return sectionAPI
 end
 
--- Di akhir script kamu, ubah dari:
--- _G.KreinHub = { ... }
-
--- Menjadi:
-local API = {
+-- Exported API
+_G.KreinHub = {
 	CreateTab = CreateTab,
 	AddButton = AddButton,
 	AddToggle = AddToggle,
 	AddDropdown = AddDropdown,
-	AddDropdownSection = AddDropdownSection,
-	Show = function()
-		KreinGui.Enabled = true
-	end,
-	Hide = function()
-		KreinGui.Enabled = false
-	end,
-	Destroy = function()
-		KreinGui:Destroy()
-	end,
+	AddDropdownSection = AddDropdownSection, -- ✅ Tambahkan ini
 }
-
-return API
 
 -- ✅ Changelog Tab Internal (Tidak bisa diubah dari luar)
 do
