@@ -349,7 +349,7 @@ do
 • Corner dan font tersinkron
 ]]
 
-	local changelogTab = CreateTab("📜 Changelog")
+	local changelogTab = CreateTab("Changelog")
 
 	local changelogBox = Instance.new("TextLabel", changelogTab)
 	changelogBox.Size = UDim2.new(1, -10, 0, 220)
@@ -359,7 +359,7 @@ do
 	changelogBox.TextXAlignment = Enum.TextXAlignment.Left
 	changelogBox.TextColor3 = Color3.fromRGB(200, 255, 200)
 	changelogBox.Font = Enum.Font.Code
-	changelogBox.TextSize = 15
+	changelogBox.TextSize = 14
 	changelogBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	changelogBox.BorderSizePixel = 0
 	changelogBox.ClipsDescendants = true
@@ -367,6 +367,6 @@ do
 	Instance.new("UICorner", changelogBox).CornerRadius = UDim.new(0, 6)
 
 	local layout = Instance.new("UIListLayout", changelogTab)
-	layout.Padding = UDim.new(0, 6)
+	layout.Padding = UDim.new(4, 6)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 end
