@@ -1,4 +1,6 @@
--- ✅ KreinHub Key System
+-- ✅ Ambil konfigurasi dari Key.lua eksternal
+local keyConfig = loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Key.lua"))()
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
@@ -15,18 +17,16 @@ Frame.Active = true
 Frame.Draggable = true
 Instance.new("UICorner", Frame)
 
--- Title
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.Position = UDim2.new(0, 0, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "KreinHub Access Key"
+Title.Text = "🔐 KreinHub Access Key"
 Title.TextColor3 = Color3.fromRGB(0, 255, 0)
 Title.Font = Enum.Font.Code
 Title.TextSize = 20
 Title.TextXAlignment = Enum.TextXAlignment.Center
 
--- Notif
 local Notif = Instance.new("TextLabel", Frame)
 Notif.Size = UDim2.new(1, -20, 0, 20)
 Notif.Position = UDim2.new(0, 10, 0, 40)
@@ -37,7 +37,6 @@ Notif.TextSize = 14
 Notif.Text = "Enter your key to access KreinHub"
 Notif.TextXAlignment = Enum.TextXAlignment.Center
 
--- Input Key
 local Input = Instance.new("TextBox", Frame)
 Input.Size = UDim2.new(1, -40, 0, 30)
 Input.Position = UDim2.new(0, 20, 0, 70)
@@ -47,11 +46,6 @@ Input.TextColor3 = Color3.new(1, 1, 1)
 Input.Font = Enum.Font.Code
 Input.TextSize = 16
 Instance.new("UICorner", Input)
-
--- Config
-local GitHubURL = "https://github.com/LippTz/KREINHUB"
-local KeyURL = "https://kreinproject.xyz/getkey"
-local CorrectKey = "kreinhub"
 
 -- Buttons
 local function createButton(name, pos, callback)
@@ -68,32 +62,27 @@ local function createButton(name, pos, callback)
 end
 
 createButton("🌐 GitHub", UDim2.new(0.05, 0, 0, 120), function()
-	setclipboard(GitHubURL)
+	setclipboard(keyConfig.GitHubURL)
 	Notif.Text = "✅ GitHub link copied!"
 end)
 
 createButton("🔑 Get Key", UDim2.new(0.35, 0, 0, 120), function()
-	setclipboard(KeyURL)
+	setclipboard(keyConfig.KeyURL)
 	Notif.Text = "✅ Key page copied!"
 end)
 
 createButton("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
-	if Input.Text == CorrectKey then
+	if Input.Text == keyConfig.CorrectKey then
 		Notif.Text = "✅ Access Granted!"
 		wait(0.5)
 		KeyGui:Destroy()
-		loadstring(game:HttpGet("https://yourkreinhublink.lua"))() -- Ganti dengan link asli GUI-mu
+
+		-- Setelah lolos key, tampilkan GUI utama
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))() -- Atau isi GUI utama kamu langsung di bawah
 	else
 		Notif.Text = "❌ Key is invalid!"
 	end
 end)
-
--- Configurable public API
-_G.KreinKeySystem = {
-	SetGitHub = function(link) GitHubURL = link end,
-	SetKeyURL = function(link) KeyURL = link end,
-	SetKey = function(key) CorrectKey = key end,
-}
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
