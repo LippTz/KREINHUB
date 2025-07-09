@@ -38,7 +38,7 @@ Notif.TextSize = 14
 Notif.Text = "Enter your key to access KreinHub"
 Notif.TextXAlignment = Enum.TextXAlignment.Center
 
-local Input = Instance.new("TextBox", Frame)
+local Input = Instance.new("Enter Key Here", Frame)
 Input.Size = UDim2.new(1, -40, 0, 30)
 Input.Position = UDim2.new(0, 20, 0, 70)
 Input.PlaceholderText = "Enter Key Here"
@@ -81,13 +81,7 @@ createButton("✅ Verify", UDim2.new(0.65, 0, 0, 120), function()
 		KeyGui:Destroy()
 
 		-- ✅ Load GUI utama hanya sekali
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/LippTz/KREINHUB/main/Base.lua"))()
-	else
-		Notif.Text = "❌ Key is invalid!"
-	end
-end)
-
-local Players = game:GetService("Players")
+		local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
@@ -459,3 +453,8 @@ do
 	layout.Padding = UDim.new(4, 6)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 end
+
+	else
+		Notif.Text = "❌ Key is invalid!"
+	end
+end)
