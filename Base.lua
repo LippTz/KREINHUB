@@ -49,9 +49,9 @@ Input.TextSize = 16
 Instance.new("UICorner", Input)
 
 -- Config
-local GitHubURL = "https://github.com/KreinProject"
+local GitHubURL = "https://github.com/LippTz/KREINHUB"
 local KeyURL = "https://kreinproject.xyz/getkey"
-local CorrectKey = "kreinhub-access"
+local CorrectKey = "kreinhub"
 
 -- Buttons
 local function createButton(name, pos, callback)
