@@ -324,6 +324,8 @@ _G.KreinHub = {
 	AddDropdownSection = AddDropdownSection, -- ✅ Tambahkan ini
 }
 
+_G.KreinHubReady = true
+
 -- ✅ Changelog Tab Internal (Tidak bisa diubah dari luar)
 do
 	local changelogText = [[
