@@ -1,198 +1,251 @@
+-- ✅ FINAL Base.lua KreinHub dengan sistem Key opsional dan modular tab
+-- By: Alif x ChatGPT
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local player = Players.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
 
--- GUI Setup
-local KreinGui = Instance.new("ScreenGui", game.CoreGui)
-KreinGui.Name = "KreinHub_UI"
-KreinGui.ResetOnSpawn = false
-
--- Main Frame
-local MainFrame = Instance.new("Frame", KreinGui)
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 450, 0, 300)
-MainFrame.Position = UDim2.new(0.5, -225, 0.5, -150)
-MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
-
--- Title
-local Title = Instance.new("TextLabel", MainFrame)
-Title.Text = "KreinHub"
-Title.Size = UDim2.new(1, -80, 0, 30)
-Title.Position = UDim2.new(0, 10, 0, 5)
-Title.TextColor3 = Color3.fromRGB(0, 255, 0)
-Title.BackgroundTransparency = 1
-Title.Font = Enum.Font.Code
-Title.TextSize = 22
-Title.TextXAlignment = Enum.TextXAlignment.Left
-
--- Minimize & Close
-local Minimize = Instance.new("TextButton", MainFrame)
-Minimize.Text = "-"
-Minimize.Size = UDim2.new(0, 30, 0, 30)
-Minimize.Position = UDim2.new(1, -70, 0, 5)
-Minimize.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Minimize.TextColor3 = Color3.fromRGB(0, 255, 0)
-Minimize.Font = Enum.Font.Code
-Minimize.TextSize = 22
-
-local Close = Instance.new("TextButton", MainFrame)
-Close.Text = "X"
-Close.Size = UDim2.new(0, 30, 0, 30)
-Close.Position = UDim2.new(1, -35, 0, 5)
-Close.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Close.TextColor3 = Color3.fromRGB(255, 0, 0)
-Close.Font = Enum.Font.Code
-Close.TextSize = 20
-
--- Content Frame
-local Content = Instance.new("Frame", MainFrame)
-Content.Name = "ContentFrame"
-Content.Position = UDim2.new(0, 0, 0, 40)
-Content.Size = UDim2.new(1, 0, 1, -45)
-Content.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-Content.BorderSizePixel = 0
-Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 8)
-
--- Tab Container (Scroll)
-local TabContainer = Instance.new("ScrollingFrame", Content)
-TabContainer.Name = "TabContainer"
-TabContainer.Size = UDim2.new(0, 120, 1, 0)
-TabContainer.Position = UDim2.new(0, 0, 0, 0)
-TabContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-TabContainer.BorderSizePixel = 0
-TabContainer.ScrollBarThickness = 6
-TabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
-TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
-Instance.new("UICorner", TabContainer).CornerRadius = UDim.new(0, 8)
-
-local TabLayout = Instance.new("UIListLayout", TabContainer)
-TabLayout.Padding = UDim.new(0, 6)
-TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-TabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	TabContainer.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y + 10)
-end)
-
--- Page Container
-local PageContainer = Instance.new("Frame", Content)
-PageContainer.Name = "PageContainer"
-PageContainer.Position = UDim2.new(0, 130, 0, 0)
-PageContainer.Size = UDim2.new(1, -130, 1, 0)
-PageContainer.BackgroundTransparency = 1
-PageContainer.ClipsDescendants = true
-
--- Minimize Logic
-local minimized = false
-local fullSize = UDim2.new(1, 0, 1, -45)
-local fullFrameSize = UDim2.new(0, 450, 0, 300)
-local minimizedFrameSize = UDim2.new(0, 190, 0, 40)
-
-Minimize.MouseButton1Click:Connect(function()
-	minimized = not minimized
-
-	if minimized then
-		TweenService:Create(Content, TweenInfo.new(0.15), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-		wait(0.15)
-		Content.Visible = false
-		TweenService:Create(MainFrame, TweenInfo.new(0.15), { Size = minimizedFrameSize }):Play()
-	else
-		TweenService:Create(MainFrame, TweenInfo.new(0.15), { Size = fullFrameSize }):Play()
-		wait(0.15)
-		Content.Visible = true
-		TweenService:Create(Content, TweenInfo.new(0.15), { Size = fullSize }):Play()
-	end
-end)
-
-Close.MouseButton1Click:Connect(function()
-	KreinGui:Destroy()
-end)
-
--- Tab Logic
+local KreinHub = {}
 local Tabs = {}
-local tabCount = 0
+local GUI, MainFrame, Content, TabContainer, PageContainer
 
-local function CreateTab(tabName)
-	if Tabs[tabName] then return Tabs[tabName] end
-
-	local TabButton = Instance.new("TextButton", TabContainer)
-	TabButton.Text = tabName
-	TabButton.Size = UDim2.new(1, -10, 0, 30)
-	TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	TabButton.TextColor3 = Color3.fromRGB(0, 255, 0)
-	TabButton.Font = Enum.Font.Code
-	TabButton.TextSize = 18
-	TabButton.AutoButtonColor = false
-	Instance.new("UICorner", TabButton).CornerRadius = UDim.new(0, 6)
-
-	local Page = Instance.new("ScrollingFrame", PageContainer)
-	Page.Name = tabName
-	Page.Size = UDim2.new(1, 0, 1, 0)
-	Page.BackgroundTransparency = 1
-	Page.ScrollBarThickness = 6
-	Page.ScrollingDirection = Enum.ScrollingDirection.Y
-	Page.CanvasSize = UDim2.new(0, 0, 0, 0)
-	Page.Visible = false
-
-	-- ✅ FIX: Tampilkan tab pertama otomatis
-	if not next(Tabs) then
-		Page.Visible = true
-	end
-
-	local Layout = Instance.new("UIListLayout", Page)
-	Layout.Padding = UDim.new(0, 6)
-	Layout.SortOrder = Enum.SortOrder.LayoutOrder
-	Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		Page.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
-	end)
-
-	Tabs[tabName] = Page
-
-	TabButton.MouseButton1Click:Connect(function()
-		for _, page in pairs(Tabs) do
-			page.Visible = false
-		end
-		Page.Visible = true
-	end)
-
-	return Page
+-- ✅ Utility
+local function CreateCorner(obj, rad)
+    local uic = Instance.new("UICorner")
+    uic.CornerRadius = UDim.new(0, rad or 6)
+    uic.Parent = obj
+    return uic
 end
 
-local function AddButton(tab, text, callback)
-	local button = Instance.new("TextButton", tab)
-	button.Size = UDim2.new(1, -10, 0, 30)
-	button.Text = text
-	button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	button.TextColor3 = Color3.fromRGB(0, 255, 0)
-	button.Font = Enum.Font.Code
-	button.TextSize = 16
-	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 6)
-	button.MouseButton1Click:Connect(callback)
+-- ✅ GUI SETUP
+function KreinHub:CreateGUI(guiName)
+    if CoreGui:FindFirstChild(guiName) then
+        CoreGui[guiName]:Destroy()
+    end
+
+    GUI = Instance.new("ScreenGui", CoreGui)
+    GUI.Name = guiName or "KreinHub_UI"
+    GUI.ResetOnSpawn = false
+
+    MainFrame = Instance.new("Frame", GUI)
+    MainFrame.Size = UDim2.new(0, 450, 0, 300)
+    MainFrame.Position = UDim2.new(0.5, -225, 0.5, -150)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Active = true
+    MainFrame.Draggable = true
+    CreateCorner(MainFrame, 10)
+
+    local Title = Instance.new("TextLabel", MainFrame)
+    Title.Text = guiName or "KreinHub"
+    Title.Size = UDim2.new(1, -80, 0, 30)
+    Title.Position = UDim2.new(0, 10, 0, 5)
+    Title.TextColor3 = Color3.fromRGB(0, 255, 0)
+    Title.BackgroundTransparency = 1
+    Title.Font = Enum.Font.Code
+    Title.TextSize = 22
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local Minimize = Instance.new("TextButton", MainFrame)
+    Minimize.Text = "-"
+    Minimize.Size = UDim2.new(0, 30, 0, 30)
+    Minimize.Position = UDim2.new(1, -70, 0, 5)
+    Minimize.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Minimize.TextColor3 = Color3.fromRGB(0, 255, 0)
+    Minimize.Font = Enum.Font.Code
+    Minimize.TextSize = 22
+
+    local Close = Instance.new("TextButton", MainFrame)
+    Close.Text = "X"
+    Close.Size = UDim2.new(0, 30, 0, 30)
+    Close.Position = UDim2.new(1, -35, 0, 5)
+    Close.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Close.TextColor3 = Color3.fromRGB(255, 0, 0)
+    Close.Font = Enum.Font.Code
+    Close.TextSize = 20
+
+    Content = Instance.new("Frame", MainFrame)
+    Content.Name = "ContentFrame"
+    Content.Position = UDim2.new(0, 0, 0, 40)
+    Content.Size = UDim2.new(1, 0, 1, -45)
+    Content.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    Content.BorderSizePixel = 0
+    CreateCorner(Content, 8)
+
+    TabContainer = Instance.new("ScrollingFrame", Content)
+    TabContainer.Name = "TabContainer"
+    TabContainer.Size = UDim2.new(0, 120, 1, 0)
+    TabContainer.Position = UDim2.new(0, 0, 0, 0)
+    TabContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    TabContainer.BorderSizePixel = 0
+    TabContainer.ScrollBarThickness = 6
+    TabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
+    TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    CreateCorner(TabContainer, 8)
+
+    local TabLayout = Instance.new("UIListLayout", TabContainer)
+    TabLayout.Padding = UDim.new(0, 6)
+    TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        TabContainer.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y + 10)
+    end)
+
+    PageContainer = Instance.new("Frame", Content)
+    PageContainer.Name = "PageContainer"
+    PageContainer.Position = UDim2.new(0, 130, 0, 0)
+    PageContainer.Size = UDim2.new(1, -130, 1, 0)
+    PageContainer.BackgroundTransparency = 1
+    PageContainer.ClipsDescendants = true
+
+    Minimize.MouseButton1Click:Connect(function()
+        Content.Visible = not Content.Visible
+    end)
+
+    Close.MouseButton1Click:Connect(function()
+        GUI:Destroy()
+    end)
 end
 
-local function AddToggle(tab, text, default, callback)
-	local toggle = Instance.new("TextButton", tab)
-	toggle.Size = UDim2.new(1, -10, 0, 30)
-	toggle.Text = text .. ": " .. (default and "ON" or "OFF")
-	toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	toggle.TextColor3 = Color3.fromRGB(0, 255, 0)
-	toggle.Font = Enum.Font.Code
-	toggle.TextSize = 16
-	local state = default
-	Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 6)
+-- ✅ Key UI
+local function ShowKeyUI(key, guiName, onSuccess)
+    local KeyUI = Instance.new("ScreenGui", CoreGui)
+    KeyUI.Name = "KeySystemUI"
 
-	toggle.MouseButton1Click:Connect(function()
-		state = not state
-		toggle.Text = text .. ": " .. (state and "ON" or "OFF")
-		callback(state)
-	end)
+    local Frame = Instance.new("Frame", KeyUI)
+    Frame.Size = UDim2.new(0, 300, 0, 120)
+    Frame.Position = UDim2.new(0.5, -150, 0.5, -60)
+    Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Frame.BorderSizePixel = 0
+    CreateCorner(Frame, 8)
+
+    local Box = Instance.new("TextBox", Frame)
+    Box.PlaceholderText = "Enter Key Here..."
+    Box.Size = UDim2.new(1, -20, 0, 30)
+    Box.Position = UDim2.new(0, 10, 0, 10)
+    Box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Box.Font = Enum.Font.Code
+    Box.TextSize = 16
+    CreateCorner(Box)
+
+    local Button = Instance.new("TextButton", Frame)
+    Button.Text = "Submit"
+    Button.Size = UDim2.new(1, -20, 0, 30)
+    Button.Position = UDim2.new(0, 10, 0, 50)
+    Button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+    Button.TextColor3 = Color3.new(1, 1, 1)
+    Button.Font = Enum.Font.Code
+    Button.TextSize = 16
+    CreateCorner(Button)
+
+    Button.MouseButton1Click:Connect(function()
+        if Box.Text == key then
+            KeyUI:Destroy()
+            onSuccess()
+        else
+            Button.Text = "Wrong Key!"
+            Button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+            wait(1)
+            Button.Text = "Submit"
+            Button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        end
+    end)
 end
 
-local function AddDropdown(tab, title, options, default, callback)
+-- ✅ Inisialisasi Awal
+function KreinHub:Init(config)
+    config = config or {}
+    local useKey = config.UseKey or false
+    local correctKey = config.Key or "KREIN123"
+    local guiName = config.GuiName or "KreinHub_UI"
+
+    local function proceed()
+        KreinHub:CreateGUI(guiName)
+    end
+
+    if useKey then
+        ShowKeyUI(correctKey, guiName, proceed)
+    else
+        proceed()
+    end
+end
+
+-- ✅ Fungsi API Modular
+function KreinHub:CreateTab(name)
+    if Tabs[name] then return Tabs[name] end
+
+    local Button = Instance.new("TextButton", TabContainer)
+    Button.Text = name
+    Button.Size = UDim2.new(1, -10, 0, 30)
+    Button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+    Button.Font = Enum.Font.Code
+    Button.TextSize = 16
+    Button.AutoButtonColor = false
+    CreateCorner(Button)
+
+    local Page = Instance.new("ScrollingFrame", PageContainer)
+    Page.Name = name
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.ScrollBarThickness = 6
+    Page.ScrollingDirection = Enum.ScrollingDirection.Y
+    Page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    Page.Visible = false
+
+    local Layout = Instance.new("UIListLayout", Page)
+    Layout.Padding = UDim.new(0, 6)
+    Layout.SortOrder = Enum.SortOrder.LayoutOrder
+    Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        Page.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
+    end)
+
+    Button.MouseButton1Click:Connect(function()
+        for _, page in pairs(Tabs) do
+            page.Visible = false
+        end
+        Page.Visible = true
+    end)
+
+    if not next(Tabs) then Page.Visible = true end
+
+    Tabs[name] = Page
+    return Page
+end
+
+function KreinHub:AddButton(tab, text, callback)
+    local btn = Instance.new("TextButton", tab)
+    btn.Size = UDim2.new(1, -10, 0, 30)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.TextColor3 = Color3.fromRGB(0, 255, 0)
+    btn.Font = Enum.Font.Code
+    btn.TextSize = 16
+    CreateCorner(btn)
+    btn.MouseButton1Click:Connect(callback)
+end
+
+function KreinHub:AddToggle(tab, text, default, callback)
+    local state = default
+    local toggle = Instance.new("TextButton", tab)
+    toggle.Size = UDim2.new(1, -10, 0, 30)
+    toggle.Text = text .. ": " .. (state and "ON" or "OFF")
+    toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    toggle.TextColor3 = Color3.fromRGB(0, 255, 0)
+    toggle.Font = Enum.Font.Code
+    toggle.TextSize = 16
+    CreateCorner(toggle)
+    toggle.MouseButton1Click:Connect(function()
+        state = not state
+        toggle.Text = text .. ": " .. (state and "ON" or "OFF")
+        callback(state)
+    end)
+end
+
+-- Tambahkan di bagian akhir Base.lua kamu:
+
+function KreinHub:AddDropdown(tab, title, options, default, callback)
 	local dropdown = Instance.new("TextButton", tab)
 	dropdown.Size = UDim2.new(1, -10, 0, 30)
 	dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -239,7 +292,7 @@ local function AddDropdown(tab, title, options, default, callback)
 	end
 end
 
-local function AddDropdownSection(tab, title)
+function KreinHub:AddDropdownSection(tab, title)
 	local container = Instance.new("Frame")
 	container.BackgroundTransparency = 1
 	container.Size = UDim2.new(1, 0, 0, 0)
@@ -316,44 +369,35 @@ local function AddDropdownSection(tab, title)
 	return sectionAPI
 end
 
--- Exported API
-_G.KreinHub = {
-	CreateTab = CreateTab,
-	AddButton = AddButton,
-	AddToggle = AddToggle,
-	AddDropdown = AddDropdown,
-	AddDropdownSection = AddDropdownSection, -- ✅ Tambahkan ini
-}
+return KreinHub
 
--- ✅ Changelog Tab Internal (Tidak bisa diubah dari luar)
 do
 	local changelogText = [[
 📢 KREINHUB CHANGELOG
 
 🟢 v1.0.0 - 2025-07-08
 • Rilis perdana KreinHub dengan sistem modular
-• Tab dan page auto layout
-• Sistem Button & Toggle siap pakai
-• Dropdown berisi sub-toggle dan button (collapsible)
-• UI hacker style dengan tema gelap
+• UI gaya hacker gelap & animasi tween
+• Sistem tab dan halaman auto layout
+• Button, Toggle, Dropdown dan Collapsible Section
+• Minimize dan Close bekerja dengan tween halus
 
-🧠 Sistem Eksport API
-• Loader luar bisa pakai: CreateTab, AddButton, AddToggle, AddDropdown
+🔑 v1.1.0 - 2025-07-09
+• Sistem Key terintegrasi (aktif/nonaktif dari loader)
+• Sistem UI Loader bisa ubah nama GUI, warna, dll
+• API: AddDropdownSection sekarang bisa dipanggil dari luar
+• Semua sistem GUI bisa dikustomisasi bebas di Loader
 
-🔒 Fitur Terproteksi
-• Tab Changelog tidak bisa diubah dari luar
-• Sistem Minimize dan Close dengan animasi Tween
-
-⚙️ Framework Stabil
-• Ukuran tab dan scroll otomatis
-• GUI auto resize saat minimize
-• Corner dan font tersinkron
+💡 Coming Soon
+• Sistem Notifikasi ringan (seperti Rayfield)
+• Simpan konfigurasi pengguna
+• Fitur resize GUI dan transparansi manual
 ]]
 
 	local changelogTab = CreateTab("Changelog")
 
 	local changelogBox = Instance.new("TextLabel", changelogTab)
-	changelogBox.Size = UDim2.new(1, -10, 0, 220)
+	changelogBox.Size = UDim2.new(1, -10, 0, 250)
 	changelogBox.Text = changelogText
 	changelogBox.TextWrapped = true
 	changelogBox.TextYAlignment = Enum.TextYAlignment.Top
@@ -368,8 +412,6 @@ do
 	Instance.new("UICorner", changelogBox).CornerRadius = UDim.new(0, 6)
 
 	local layout = Instance.new("UIListLayout", changelogTab)
-	layout.Padding = UDim.new(4, 6)
+	layout.Padding = UDim.new(0, 6)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 end
-
-return _G.KreinHub
