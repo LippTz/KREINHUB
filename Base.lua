@@ -90,7 +90,7 @@ PageContainer.ClipsDescendants = true
 local minimized = false
 local fullSize = UDim2.new(1, 0, 1, -45)
 local fullFrameSize = UDim2.new(0, 450, 0, 300)
-local minimizedFrameSize = UDim2.new(0, 190, 0, 40)
+local minimizedFrameSize = UDim2.new(0, 450, 0, 40)
 
 Minimize.MouseButton1Click:Connect(function()
 minimized = not minimized
@@ -123,7 +123,7 @@ if Tabs[tabName] then return Tabs[tabName] end
 local TabButton = Instance.new("TextButton", TabContainer)  
 TabButton.Text = tabName  
 TabButton.Size = UDim2.new(1, -10, 0, 30)  
-TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  
+TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  
 TabButton.TextColor3 = Color3.fromRGB(0, 255, 0)  
 TabButton.Font = Enum.Font.Code  
 TabButton.TextSize = 18  
@@ -168,7 +168,7 @@ local function AddButton(tab, text, callback)
 local button = Instance.new("TextButton", tab)
 button.Size = UDim2.new(1, -10, 0, 30)
 button.Text = text
-button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 button.TextColor3 = Color3.fromRGB(0, 255, 0)
 button.Font = Enum.Font.Code
 button.TextSize = 16
@@ -219,9 +219,9 @@ end)
 
 for _, opt in ipairs(options) do  
 	local btn = Instance.new("TextButton", tab)  
-	btn.Size = UDim2.new(1, -10, 0, 25)  
+	btn.Size = UDim2.new(1, -20, 0, 25)  
 	btn.Text = opt  
-	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)  
+	btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  
 	btn.TextColor3 = Color3.fromRGB(200, 200, 200)  
 	btn.Font = Enum.Font.Code  
 	btn.TextSize = 14  
@@ -252,11 +252,11 @@ local function AddDropdownSection(tab, title)
 
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Size = UDim2.new(1, -10, 0, 30)
-	toggleBtn.Position = UDim2.new(0, 0, 0, 0)
+	toggleBtn.Position = UDim2.new(0, 5, 0, 0)
 	toggleBtn.Text = "▼ " .. title
 	toggleBtn.Font = Enum.Font.Code
 	toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
-	toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	toggleBtn.TextSize = 16
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = container
@@ -319,6 +319,78 @@ local function AddDropdownSection(tab, title)
 
 	return sectionAPI
 end
+
+local Themes = {
+	["Dark Green"] = {
+		MainBG = Color3.fromRGB(10, 10, 10),
+		Accent = Color3.fromRGB(0, 255, 0),
+		Button = Color3.fromRGB(50, 50, 50),
+		Tab = Color3.fromRGB(30, 30, 30),
+		Dropdown = Color3.fromRGB(40, 40, 40),
+		Text = Color3.fromRGB(255, 255, 255),
+	},
+	["Neon Blue"] = {
+		MainBG = Color3.fromRGB(10, 10, 20),
+		Accent = Color3.fromRGB(0, 170, 255),
+		Button = Color3.fromRGB(30, 30, 50),
+		Tab = Color3.fromRGB(20, 20, 40),
+		Dropdown = Color3.fromRGB(40, 40, 60),
+		Text = Color3.fromRGB(230, 240, 255),
+	},
+	["Hot Pink"] = {
+		MainBG = Color3.fromRGB(25, 10, 25),
+		Accent = Color3.fromRGB(255, 0, 150),
+		Button = Color3.fromRGB(60, 20, 60),
+		Tab = Color3.fromRGB(40, 20, 40),
+		Dropdown = Color3.fromRGB(80, 30, 80),
+		Text = Color3.fromRGB(255, 220, 255),
+	},
+	["Monokai"] = {
+		MainBG = Color3.fromRGB(39, 40, 34),
+		Accent = Color3.fromRGB(249, 38, 114),
+		Button = Color3.fromRGB(73, 72, 62),
+		Tab = Color3.fromRGB(50, 50, 50),
+		Dropdown = Color3.fromRGB(90, 90, 90),
+		Text = Color3.fromRGB(255, 255, 255),
+	}
+}
+
+-- Theme Switch Logic
+local function ApplyTheme(theme)
+	local t = Themes[theme]
+	if not t then return end
+
+	MainFrame.BackgroundColor3 = t.MainBG
+	Title.TextColor3 = t.Accent
+	Minimize.BackgroundColor3 = t.Button
+	Minimize.TextColor3 = t.Accent
+	Close.BackgroundColor3 = t.Button
+	Close.TextColor3 = Color3.fromRGB(255, 100, 100)
+
+	for _, obj in pairs(MainFrame:GetDescendants()) do
+		if obj:IsA("TextButton") or obj:IsA("TextLabel") then
+			obj.TextColor3 = t.Text
+		end
+		if obj:IsA("TextButton") and obj.Parent == TabContainer then
+			obj.BackgroundColor3 = t.Tab
+		end
+		if obj:IsA("TextButton") and obj.Text:match(":") then
+			obj.BackgroundColor3 = t.Dropdown
+		end
+		if obj:IsA("TextButton") and not obj.Text:match(":") then
+			obj.BackgroundColor3 = t.Button
+		end
+	end
+end
+
+-- Create Setting Tab
+local settingTab = CreateTab("Setting")
+AddDropdown(settingTab, "Select Theme", { "Dark Green", "Neon Blue", "Hot Pink", "Monokai" }, "Dark Green", function(selected)
+	ApplyTheme(selected)
+end)
+
+-- Apply default
+ApplyTheme("Dark Green")
 
 
 
