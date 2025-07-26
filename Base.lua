@@ -1,3 +1,85 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- GUI Utama
+local KreinGui = Instance.new("ScreenGui", game.CoreGui)
+KreinGui.Name = "KreinHub_UI"
+KreinGui.ResetOnSpawn = false
+
+-- ðŸ”Š Sound Loading
+local LoadingSound = Instance.new("Sound")
+LoadingSound.SoundId = "rbxassetid://71501562798859" -- Ganti dengan ID sesuai selera kamu
+LoadingSound.Volume = 1
+LoadingSound.Looped = true
+LoadingSound.Name = "LoadingSound"
+LoadingSound.Parent = KreinGui
+LoadingSound:Play()
+
+-- Loading Container
+local LoadingFrame = Instance.new("Frame", KreinGui)
+LoadingFrame.Size = UDim2.new(0, 400, 0, 200)
+LoadingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+LoadingFrame.BorderSizePixel = 0
+
+local UICorner = Instance.new("UICorner", LoadingFrame)
+UICorner.CornerRadius = UDim.new(0, 12)
+
+-- LOGO Typewriter Text
+local LogoText = Instance.new("TextLabel", LoadingFrame)
+LogoText.Size = UDim2.new(1, 0, 0.4, 0)
+LogoText.Position = UDim2.new(0, 0, 0.1, 0)
+LogoText.BackgroundTransparency = 1
+LogoText.Font = Enum.Font.Code
+LogoText.TextColor3 = Color3.fromRGB(0, 255, 140)
+LogoText.TextScaled = true
+LogoText.Text = ""
+
+-- Loading Bar Background
+local BarBack = Instance.new("Frame", LoadingFrame)
+BarBack.Size = UDim2.new(0.8, 0, 0.15, 0)
+BarBack.Position = UDim2.new(0.1, 0, 0.65, 0)
+BarBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+BarBack.BorderSizePixel = 0
+
+local BarCorner = Instance.new("UICorner", BarBack)
+BarCorner.CornerRadius = UDim.new(1, 0)
+
+-- Loading Bar Fill
+local BarFill = Instance.new("Frame", BarBack)
+BarFill.Size = UDim2.new(0, 0, 1, 0)
+BarFill.BackgroundColor3 = Color3.fromRGB(0, 255, 140)
+BarFill.BorderSizePixel = 0
+
+local FillCorner = Instance.new("UICorner", BarFill)
+FillCorner.CornerRadius = UDim.new(1, 0)
+
+-- RGB Loop (Optional)
+task.spawn(function()
+	while BarFill.Parent do
+		local hue = tick() % 5 / 5
+		local rgb = Color3.fromHSV(hue, 1, 1)
+		BarFill.BackgroundColor3 = rgb
+		LogoText.TextColor3 = rgb
+		task.wait(0.1)
+	end
+end)
+
+-- Typewriter Animation
+local targetText = "KREINHUB"
+for i = 1, #targetText do
+	LogoText.Text = string.sub(targetText, 1, i)
+	wait(0.08)
+end
+
+-- Loading Bar Animation
+TweenService:Create(BarFill, TweenInfo.new(2, Enum.EasingStyle.Quad), {
+	Size = UDim2.new(1, 0, 1, 0)
+}):Play()
+wait(2.2)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -7,6 +89,7 @@ local player = Players.LocalPlayer
 local KreinGui = Instance.new("ScreenGui", game.CoreGui)
 KreinGui.Name = "KreinHub_UI"
 KreinGui.ResetOnSpawn = false
+
 
 -- Main Frame
 local MainFrame = Instance.new("Frame", KreinGui)
@@ -18,6 +101,26 @@ MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+MainFrame.Visible = false -- atau apa pun nama frame utama kamu
+
+TweenService:Create(LoadingFrame, TweenInfo.new(1), {
+	Size = UDim2.new(0, 0, 0, 0),
+	Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundTransparency = 1
+}):Play()
+
+for _, v in pairs(LoadingFrame:GetDescendants()) do
+	if v:IsA("TextLabel") or v:IsA("Frame") then
+		TweenService:Create(v, TweenInfo.new(1), {Transparency = 1}):Play()
+	end
+end
+
+task.delay(1, function()
+    LoadingSound:Stop()
+    LoadingSound:Destroy()
+	LoadingFrame:Destroy()
+	MainFrame.Visible = true
+end)
 
 -- Title
 local Title = Instance.new("TextLabel", MainFrame)
@@ -90,7 +193,7 @@ PageContainer.ClipsDescendants = true
 local minimized = false
 local fullSize = UDim2.new(1, 0, 1, -45)
 local fullFrameSize = UDim2.new(0, 450, 0, 300)
-local minimizedFrameSize = UDim2.new(0, 450, 0, 40)
+local minimizedFrameSize = UDim2.new(0, 190, 0, 40)
 
 Minimize.MouseButton1Click:Connect(function()
 minimized = not minimized
@@ -139,7 +242,7 @@ Page.ScrollingDirection = Enum.ScrollingDirection.Y
 Page.CanvasSize = UDim2.new(0, 0, 0, 0)  
 Page.Visible = false  
 
--- ✅ FIX: Tampilkan tab pertama otomatis  
+-- âœ… FIX: Tampilkan tab pertama otomatis  
 if not next(Tabs) then  
 	Page.Visible = true  
 end  
@@ -253,7 +356,7 @@ local function AddDropdownSection(tab, title)
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Size = UDim2.new(1, -10, 0, 30)
 	toggleBtn.Position = UDim2.new(0, 5, 0, 0)
-	toggleBtn.Text = "▼ " .. title
+	toggleBtn.Text = "â–¼ " .. title
 	toggleBtn.Font = Enum.Font.Code
 	toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -278,7 +381,7 @@ local function AddDropdownSection(tab, title)
 	toggleBtn.MouseButton1Click:Connect(function()
 		expanded = not expanded
 		contentFrame.Visible = expanded
-		toggleBtn.Text = (expanded and "▲ " or "▼ ") .. title
+		toggleBtn.Text = (expanded and "â–² " or "â–¼ ") .. title
 	end)
 
 	local sectionAPI = {}
@@ -320,14 +423,62 @@ local function AddDropdownSection(tab, title)
 	return sectionAPI
 end
 
+-- âœ… Changelog Tab Internal (Tidak bisa diubah dari luar)
+do
+	local changelogText = [[
+ðŸ“¢ KREINHUB CHANGELOG
+
+ðŸŸ¢ v1.0.0 - 2025-07-08
+â€¢ Rilis perdana KreinHub dengan sistem modular
+â€¢ Tab dan page auto layout
+â€¢ Sistem Button & Toggle siap pakai
+â€¢ Dropdown berisi sub-toggle dan button (collapsible)
+â€¢ UI hacker style dengan tema gelap
+
+ðŸ§  Sistem Eksport API
+â€¢ Loader luar bisa pakai: CreateTab, AddButton, AddToggle, AddDropdown
+
+ðŸ”’ Fitur Terproteksi
+â€¢ Tab Changelog tidak bisa diubah dari luar
+â€¢ Sistem Minimize dan Close dengan animasi Tween
+
+âš™ï¸ Framework Stabil
+â€¢ Ukuran tab dan scroll otomatis
+â€¢ GUI auto resize saat minimize
+â€¢ Corner dan font tersinkron
+]]
+
+	local changelogTab = CreateTab("Changelog")
+
+	local changelogBox = Instance.new("TextLabel", changelogTab)
+	changelogBox.Size = UDim2.new(1, -10, 0, 220)
+	changelogBox.Text = changelogText
+	changelogBox.TextWrapped = true
+	changelogBox.TextYAlignment = Enum.TextYAlignment.Top
+	changelogBox.TextXAlignment = Enum.TextXAlignment.Left
+	changelogBox.TextColor3 = Color3.fromRGB(200, 255, 200)
+	changelogBox.Font = Enum.Font.Code
+	changelogBox.TextSize = 15
+	changelogBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	changelogBox.BorderSizePixel = 0
+	changelogBox.ClipsDescendants = true
+	changelogBox.TextTruncate = Enum.TextTruncate.AtEnd
+	Instance.new("UICorner", changelogBox).CornerRadius = UDim.new(0, 6)
+
+	local layout = Instance.new("UIListLayout", changelogTab)
+	layout.Padding = UDim.new(0, 6)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+end
+
+
 local Themes = {
 	["Dark Green"] = {
 		MainBG = Color3.fromRGB(10, 10, 10),
 		Accent = Color3.fromRGB(0, 255, 0),
-		Button = Color3.fromRGB(50, 50, 50),
-		Tab = Color3.fromRGB(30, 30, 30),
+		Button = Color3.fromRGB(20, 20, 20),
+		Tab = Color3.fromRGB(25, 25, 25),
 		Dropdown = Color3.fromRGB(40, 40, 40),
-		Text = Color3.fromRGB(255, 255, 255),
+		Text = Color3.fromRGB(0, 255, 0),
 	},
 	["Neon Blue"] = {
 		MainBG = Color3.fromRGB(10, 10, 20),
@@ -392,6 +543,45 @@ end)
 -- Apply default
 ApplyTheme("Dark Green")
 
+-- ðŸ”§ Misc Tab + Script Runner
+local miscTab = CreateTab("Misc")
+
+-- Runner UI
+local runnerBox = Instance.new("TextBox", miscTab)
+runnerBox.Size = UDim2.new(1, -10, 0, 100)
+runnerBox.Text = "-- Tulis script Lua di sini lalu tekan Execute"
+runnerBox.TextWrapped = true
+runnerBox.TextYAlignment = Enum.TextYAlignment.Top
+runnerBox.TextXAlignment = Enum.TextXAlignment.Left
+runnerBox.ClearTextOnFocus = false
+runnerBox.MultiLine = true
+runnerBox.Font = Enum.Font.Code
+runnerBox.TextSize = 15
+runnerBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+runnerBox.TextColor3 = Color3.fromRGB(0, 255, 0)
+Instance.new("UICorner", runnerBox).CornerRadius = UDim.new(0, 6)
+
+local execBtn = Instance.new("TextButton", miscTab)
+execBtn.Size = UDim2.new(1, -10, 0, 30)
+execBtn.Text = "â–¶ Execute"
+execBtn.Font = Enum.Font.Code
+execBtn.TextSize = 16
+execBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+execBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
+Instance.new("UICorner", execBtn).CornerRadius = UDim.new(0, 6)
+
+execBtn.MouseButton1Click:Connect(function()
+	local src = runnerBox.Text
+	if src and src:match("%S") then
+		local func, err = loadstring(src)
+		if func then
+			pcall(func)
+		else
+			warn("Error in script:", err)
+		end
+	end
+end)
+
 
 
 -- Exported API
@@ -403,49 +593,3 @@ _G.KreinHub = {
 	AddDropdownSection = AddDropdownSection,
 }
 
--- ✅ Changelog Tab Internal (Tidak bisa diubah dari luar)
-do
-	local changelogText = [[
-📢 KREINHUB CHANGELOG
-
-🟢 v1.0.0 - 2025-07-08
-• Rilis perdana KreinHub dengan sistem modular
-• Tab dan page auto layout
-• Sistem Button & Toggle siap pakai
-• Dropdown berisi sub-toggle dan button (collapsible)
-• UI hacker style dengan tema gelap
-
-🧠 Sistem Eksport API
-• Loader luar bisa pakai: CreateTab, AddButton, AddToggle, AddDropdown
-
-🔒 Fitur Terproteksi
-• Tab Changelog tidak bisa diubah dari luar
-• Sistem Minimize dan Close dengan animasi Tween
-
-⚙️ Framework Stabil
-• Ukuran tab dan scroll otomatis
-• GUI auto resize saat minimize
-• Corner dan font tersinkron
-]]
-
-	local changelogTab = CreateTab("Changelog")
-
-	local changelogBox = Instance.new("TextLabel", changelogTab)
-	changelogBox.Size = UDim2.new(1, -10, 0, 220)
-	changelogBox.Text = changelogText
-	changelogBox.TextWrapped = true
-	changelogBox.TextYAlignment = Enum.TextYAlignment.Top
-	changelogBox.TextXAlignment = Enum.TextXAlignment.Left
-	changelogBox.TextColor3 = Color3.fromRGB(200, 255, 200)
-	changelogBox.Font = Enum.Font.Code
-	changelogBox.TextSize = 15
-	changelogBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	changelogBox.BorderSizePixel = 0
-	changelogBox.ClipsDescendants = true
-	changelogBox.TextTruncate = Enum.TextTruncate.AtEnd
-	Instance.new("UICorner", changelogBox).CornerRadius = UDim.new(0, 6)
-
-	local layout = Instance.new("UIListLayout", changelogTab)
-	layout.Padding = UDim.new(0, 6)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-end
