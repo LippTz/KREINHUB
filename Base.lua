@@ -582,14 +582,68 @@ execBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
+--  Sound Setup
+local Sound = Instance.new("Sound")
+Sound.Name = "MusicPlayer"
+Sound.Volume = 1
+Sound.Looped = true
+Sound.Parent = game:GetService("SoundService")
 
+--  Musik Frame
+local MusicFrame = Instance.new("Frame")
+MusicFrame.Size = UDim2.new(0, 250, 0, 120)
+MusicFrame.Position = UDim2.new(1, -820, 1, -330)
+MusicFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MusicFrame.BorderSizePixel = 0
+MusicFrame.Visible = true
+MusicFrame.Name = "MusicPlayerFrame"
+MusicFrame.Parent = KreinGui
 
--- Exported API
-_G.KreinHub = {
-	CreateTab = CreateTab,
-	AddButton = AddButton,
-	AddToggle = AddToggle,
-	AddDropdown = AddDropdown,
-	AddDropdownSection = AddDropdownSection,
-}
+-- UICorner & Shadow
+local corner = Instance.new("UICorner", MusicFrame)
+corner.CornerRadius = UDim.new(0, 8)
 
+-- Judul
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.Position = UDim2.new(0, 10, 0, 5)
+Title.BackgroundTransparency = 1
+Title.Text = " KreinHub Music"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = MusicFrame
+
+-- TextBox untuk input Sound ID
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(1, -20, 0, 30)
+TextBox.Position = UDim2.new(0, 10, 0, 35)
+TextBox.PlaceholderText = "Masukkan Sound ID Roblox"
+TextBox.Text = ""
+TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.Font = Enum.Font.Gotham
+TextBox.TextSize = 14
+TextBox.ClearTextOnFocus = false
+TextBox.Parent = MusicFrame
+
+Instance.new("UICorner", TextBox)
+
+-- Tombol Play
+local PlayButton = Instance.new("TextButton")
+PlayButton.Size = UDim2.new(0.5, -15, 0, 30)
+PlayButton.Position = UDim2.new(0, 10, 0, 75)
+PlayButton.Text = " Play"
+PlayButton.BackgroundColor3 = Color3.fromRGB(0, 170, 100)
+PlayButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayButton.Font = Enum.Font.GothamBold
+PlayButton.TextSize = 14
+PlayButton.Parent = MusicFrame
+
+Instance.new("UICorner", PlayButton)
+
+-- Tombol Stop
+local StopButton = Instance.new("TextButton")
+StopButton.Size = UDim2.new(0.5, -15, 0, 30)
+StopButton.Position = UDim2.ne
