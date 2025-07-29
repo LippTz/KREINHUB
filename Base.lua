@@ -646,4 +646,71 @@ Instance.new("UICorner", PlayButton)
 -- Tombol Stop
 local StopButton = Instance.new("TextButton")
 StopButton.Size = UDim2.new(0.5, -15, 0, 30)
-StopButton.Position = UDim2.ne
+StopButton.Position = UDim2.new(0.5, 5, 0, 75)
+StopButton.Text = " Stop"
+StopButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+StopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+StopButton.Font = Enum.Font.GothamBold
+StopButton.TextSize = 14
+StopButton.Parent = MusicFrame
+
+Instance.new("UICorner", StopButton)
+
+--  Tombol Minimize
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, 0, 0, 5)
+MinimizeButton.AnchorPoint = Vector2.new(1, 0)
+MinimizeButton.Text = "-"
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.TextSize = 14
+MinimizeButton.Parent = MusicFrame
+
+Instance.new("UICorner", MinimizeButton)
+
+local isMinimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    if isMinimized then
+        MusicFrame:TweenSize(UDim2.new(0, 40, 0, 40), "Out", "Quart", 0.3, true)
+        for _, child in pairs(MusicFrame:GetChildren()) do
+            if child ~= MinimizeButton and child:IsA("GuiObject") then
+                child.Visible = false
+            end
+        end
+    else
+        MusicFrame:TweenSize(UDim2.new(0, 250, 0, 120), "Out", "Quart", 0.3, true)
+        task.wait(0.3)
+        for _, child in pairs(MusicFrame:GetChildren()) do
+            if child ~= MinimizeButton and child:IsA("GuiObject") then
+                child.Visible = true
+            end
+        end
+    end
+end)
+
+PlayButton.MouseButton1Click:Connect(function()
+	local id = TextBox.Text:match("%d+")
+	if id then
+		Sound.SoundId = "rbxassetid://"..id
+		Sound:Play()
+	end
+end)
+
+StopButton.MouseButton1Click:Connect(function()
+	Sound:Stop()
+end)
+
+
+
+-- Exported API
+_G.KreinHub = {
+	CreateTab = CreateTab,
+	AddButton = AddButton,
+	AddToggle = AddToggle,
+	AddDropdown = AddDropdown,
+	AddDropdownSection = AddDropdownSection,
+}
+
