@@ -582,14 +582,14 @@ execBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
---  Sound Setup
+-- 🔊 Sound Setup
 local Sound = Instance.new("Sound")
 Sound.Name = "MusicPlayer"
 Sound.Volume = 1
 Sound.Looped = true
 Sound.Parent = game:GetService("SoundService")
 
---  Musik Frame
+-- 🎵 Musik Frame
 local MusicFrame = Instance.new("Frame")
 MusicFrame.Size = UDim2.new(0, 250, 0, 120)
 MusicFrame.Position = UDim2.new(1, -820, 1, -330)
@@ -608,7 +608,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -30, 0, 25)
 Title.Position = UDim2.new(0, 10, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = " KreinHub Music"
+Title.Text = "🎵 KreinHub Music"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
@@ -627,36 +627,33 @@ TextBox.Font = Enum.Font.Gotham
 TextBox.TextSize = 14
 TextBox.ClearTextOnFocus = false
 TextBox.Parent = MusicFrame
-
 Instance.new("UICorner", TextBox)
 
 -- Tombol Play
 local PlayButton = Instance.new("TextButton")
 PlayButton.Size = UDim2.new(0.5, -15, 0, 30)
 PlayButton.Position = UDim2.new(0, 10, 0, 75)
-PlayButton.Text = " Play"
+PlayButton.Text = "▶ Play"
 PlayButton.BackgroundColor3 = Color3.fromRGB(0, 170, 100)
 PlayButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayButton.Font = Enum.Font.GothamBold
 PlayButton.TextSize = 14
 PlayButton.Parent = MusicFrame
-
 Instance.new("UICorner", PlayButton)
 
 -- Tombol Stop
 local StopButton = Instance.new("TextButton")
 StopButton.Size = UDim2.new(0.5, -15, 0, 30)
 StopButton.Position = UDim2.new(0.5, 5, 0, 75)
-StopButton.Text = " Stop"
+StopButton.Text = "■ Stop"
 StopButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
 StopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 StopButton.Font = Enum.Font.GothamBold
 StopButton.TextSize = 14
 StopButton.Parent = MusicFrame
-
 Instance.new("UICorner", StopButton)
 
---  Tombol Minimize
+-- 🔽 Tombol Minimize
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
 MinimizeButton.Position = UDim2.new(1, 0, 0, 5)
@@ -667,7 +664,6 @@ MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 MinimizeButton.Font = Enum.Font.GothamBold
 MinimizeButton.TextSize = 14
 MinimizeButton.Parent = MusicFrame
-
 Instance.new("UICorner", MinimizeButton)
 
 local isMinimized = false
@@ -691,6 +687,7 @@ MinimizeButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- ▶ Play Musik
 PlayButton.MouseButton1Click:Connect(function()
 	local id = TextBox.Text:match("%d+")
 	if id then
@@ -699,9 +696,52 @@ PlayButton.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- ■ Stop Musik
 StopButton.MouseButton1Click:Connect(function()
 	Sound:Stop()
 end)
+
+-- 🖱 Drag Function (biar MusicFrame bisa digeser)
+local UserInputService = game:GetService("UserInputService")
+
+local function dragify(frame)
+	local dragging, dragInput, dragStart, startPos
+
+	local function update(input)
+		local delta = input.Position - dragStart
+		local pos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		frame.Position = pos
+	end
+
+	frame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = frame.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+end
+
+dragify(MusicFrame) -- aktifkan drag
 
 
 
