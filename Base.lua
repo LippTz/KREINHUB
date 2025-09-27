@@ -200,12 +200,12 @@ minimized = not minimized
 
 if minimized then  
 	TweenService:Create(Content, TweenInfo.new(0.25), { Size = UDim2.new(1, 0, 0, 0) }):Play()  
-	wait(0.25)  
+	wait(0.2)  
 	Content.Visible = false  
 	TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = minimizedFrameSize }):Play()  
 else  
 	TweenService:Create(MainFrame, TweenInfo.new(0.25), { Size = fullFrameSize }):Play()  
-	wait(0.25)  
+	wait(0.2)  
 	Content.Visible = true  
 	TweenService:Create(Content, TweenInfo.new(0.25), { Size = fullSize }):Play()  
 end
@@ -325,7 +325,7 @@ for _, opt in ipairs(options) do
 	btn.Size = UDim2.new(1, -20, 0, 25)  
 	btn.Text = opt  
 	btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  
-	btn.TextColor3 = Color3.fromRGB(200, 200, 200)  
+	btn.TextColor3 = Color3.fromRGB(0, 255, 0)  
 	btn.Font = Enum.Font.Code  
 	btn.TextSize = 14  
 	btn.Visible = false  
@@ -356,7 +356,7 @@ local function AddDropdownSection(tab, title)
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Size = UDim2.new(1, -10, 0, 30)
 	toggleBtn.Position = UDim2.new(0, 5, 0, 0)
-	toggleBtn.Text = "â–¼ " .. title
+	toggleBtn.Text = "• " .. title
 	toggleBtn.Font = Enum.Font.Code
 	toggleBtn.TextColor3 = Color3.fromRGB(0, 255, 0)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -381,7 +381,7 @@ local function AddDropdownSection(tab, title)
 	toggleBtn.MouseButton1Click:Connect(function()
 		expanded = not expanded
 		contentFrame.Visible = expanded
-		toggleBtn.Text = (expanded and "â–² " or "â–¼ ") .. title
+		toggleBtn.Text = (expanded and "| " or "• ") .. title
 	end)
 
 	local sectionAPI = {}
@@ -753,3 +753,4 @@ _G.KreinHub = {
 	AddDropdown = AddDropdown,
 	AddDropdownSection = AddDropdownSection,
 }
+
