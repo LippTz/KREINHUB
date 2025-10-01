@@ -423,38 +423,43 @@ local function AddDropdownSection(tab, title)
 	return sectionAPI
 end
 
--- ✅ Fungsi Slider
+--  Fungsi Slider
 local function AddSlider(tab, text, min, max, default, callback)
+    -- Frame utama slider
     local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(0, 250, 0, 40)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    sliderFrame.Size = UDim2.new(1, -10, 0, 50)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = tab.Content
 
+    -- Label teks
     local label = Instance.new("TextLabel")
     label.Text = text .. ": " .. tostring(default)
     label.Size = UDim2.new(1, -20, 0, 20)
-    label.Position = UDim2.new(0, 10, 0, 0)
+    label.Position = UDim2.new(0, 10, 0, 5)
     label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(200, 200, 200)
+    label.TextColor3 = Color3.fromRGB(220, 220, 220)
     label.Font = Enum.Font.Code
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = sliderFrame
 
+    -- Background track slider
     local sliderBack = Instance.new("Frame")
     sliderBack.Size = UDim2.new(1, -20, 0, 8)
-    sliderBack.Position = UDim2.new(0, 10, 0, 25)
-    sliderBack.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sliderBack.Position = UDim2.new(0, 10, 0, 30)
+    sliderBack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     sliderBack.BorderSizePixel = 0
     sliderBack.Parent = sliderFrame
 
+    -- Fill (progress bar)
     local sliderFill = Instance.new("Frame")
     sliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
     sliderFill.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
     sliderFill.BorderSizePixel = 0
     sliderFill.Parent = sliderBack
 
+    -- Logic drag
     local dragging = false
     local UserInputService = game:GetService("UserInputService")
 
@@ -464,7 +469,7 @@ local function AddSlider(tab, text, min, max, default, callback)
         sliderFill.Size = UDim2.new(pos, 0, 1, 0)
         label.Text = text .. ": " .. tostring(value)
         if callback then
-            callback(value)
+            pcall(callback, value) -- biar aman kalau error
         end
     end
 
@@ -486,6 +491,9 @@ local function AddSlider(tab, text, min, max, default, callback)
             dragging = false
         end
     end)
+
+    -- Return biar bisa dipakai lagi kalau perlu
+    return sliderFrame
 end
 
 
@@ -812,7 +820,7 @@ dragify(MusicFrame) -- aktifkan drag
 
 
 
--- ✅ Export semua fungsi supaya bisa dipanggil di Loader.lua
+--  Export semua fungsi supaya bisa dipanggil di Loader.lua
 _G.KreinHub = {
     CreateTab = CreateTab,
     AddButton = AddButton,
