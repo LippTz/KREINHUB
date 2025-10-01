@@ -752,7 +752,6 @@ _G.KreinHub = {
     AddButton = AddButton,
     AddToggle = AddToggle,
     AddDropdown = AddDropdown,
-    AddDropdownSection = AddDropdownSection,
-    AddSlider = AddSlider, -- <=== sudah ditambahkan bro
+    AddDropdownSection = AddDropdownSection
 }
 
