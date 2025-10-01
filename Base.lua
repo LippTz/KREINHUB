@@ -423,6 +423,84 @@ local function AddDropdownSection(tab, title)
 	return sectionAPI
 end
 
+-- 📌 Fungsi Tambahan: Slider
+function KreinHub:AddSlider(tab, text, min, max, default, callback)
+    local SliderFrame = Instance.new("Frame")
+    SliderFrame.Size = UDim2.new(1, -10, 0, 50)
+    SliderFrame.BackgroundTransparency = 1
+    SliderFrame.Parent = tab
+
+    local Label = Instance.new("TextLabel")
+    Label.Size = UDim2.new(1, -20, 0, 20)
+    Label.Position = UDim2.new(0, 10, 0, 0)
+    Label.BackgroundTransparency = 1
+    Label.Text = text .. " : " .. tostring(default)
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Label.Font = Enum.Font.GothamBold
+    Label.TextSize = 14
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Parent = SliderFrame
+
+    local SliderBar = Instance.new("Frame")
+    SliderBar.Size = UDim2.new(1, -20, 0, 8)
+    SliderBar.Position = UDim2.new(0, 10, 0, 25)
+    SliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    SliderBar.BorderSizePixel = 0
+    SliderBar.Parent = SliderFrame
+    Instance.new("UICorner", SliderBar)
+
+    local Fill = Instance.new("Frame")
+    Fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    Fill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    Fill.BorderSizePixel = 0
+    Fill.Parent = SliderBar
+    Instance.new("UICorner", Fill)
+
+    local DragButton = Instance.new("TextButton")
+    DragButton.Size = UDim2.new(0, 15, 0, 15)
+    DragButton.Position = UDim2.new((default - min) / (max - min), -7, 0.5, -7)
+    DragButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    DragButton.Text = ""
+    DragButton.AutoButtonColor = false
+    DragButton.Parent = SliderBar
+    Instance.new("UICorner", DragButton)
+
+    local UserInputService = game:GetService("UserInputService")
+    local Value = default
+
+    local function Update(inputX)
+        local barPos = SliderBar.AbsolutePosition.X
+        local barSize = SliderBar.AbsoluteSize.X
+        local percent = math.clamp((inputX - barPos) / barSize, 0, 1)
+
+        Value = math.floor(min + (max - min) * percent)
+        Fill.Size = UDim2.new(percent, 0, 1, 0)
+        DragButton.Position = UDim2.new(percent, -7, 0.5, -7)
+        Label.Text = text .. " : " .. tostring(Value)
+
+        if callback then
+            callback(Value)
+        end
+    end
+
+    DragButton.MouseButton1Down:Connect(function()
+        local moveConn, releaseConn
+        moveConn = UserInputService.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                Update(input.Position.X)
+            end
+        end)
+        releaseConn = UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                moveConn:Disconnect()
+                releaseConn:Disconnect()
+            end
+        end)
+    end)
+
+    return SliderFrame
+end
+
 -- âœ… Changelog Tab Internal (Tidak bisa diubah dari luar)
 do
 	local changelogText = [[
@@ -582,14 +660,14 @@ execBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- 🔊 Sound Setup
+--  Sound Setup
 local Sound = Instance.new("Sound")
 Sound.Name = "MusicPlayer"
 Sound.Volume = 1
 Sound.Looped = true
 Sound.Parent = game:GetService("SoundService")
 
--- 🎵 Musik Frame
+--  Musik Frame
 local MusicFrame = Instance.new("Frame")
 MusicFrame.Size = UDim2.new(0, 250, 0, 120)
 MusicFrame.Position = UDim2.new(1, -820, 1, -330)
@@ -608,7 +686,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -30, 0, 25)
 Title.Position = UDim2.new(0, 10, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "🎵 KreinHub Music"
+Title.Text = " KreinHub Music"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
@@ -633,7 +711,7 @@ Instance.new("UICorner", TextBox)
 local PlayButton = Instance.new("TextButton")
 PlayButton.Size = UDim2.new(0.5, -15, 0, 30)
 PlayButton.Position = UDim2.new(0, 10, 0, 75)
-PlayButton.Text = "▶ Play"
+PlayButton.Text = " Play"
 PlayButton.BackgroundColor3 = Color3.fromRGB(0, 170, 100)
 PlayButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayButton.Font = Enum.Font.GothamBold
@@ -645,7 +723,7 @@ Instance.new("UICorner", PlayButton)
 local StopButton = Instance.new("TextButton")
 StopButton.Size = UDim2.new(0.5, -15, 0, 30)
 StopButton.Position = UDim2.new(0.5, 5, 0, 75)
-StopButton.Text = "■ Stop"
+StopButton.Text = " Stop"
 StopButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
 StopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 StopButton.Font = Enum.Font.GothamBold
@@ -653,7 +731,7 @@ StopButton.TextSize = 14
 StopButton.Parent = MusicFrame
 Instance.new("UICorner", StopButton)
 
--- 🔽 Tombol Minimize
+--  Tombol Minimize
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
 MinimizeButton.Position = UDim2.new(1, 0, 0, 5)
@@ -687,7 +765,7 @@ MinimizeButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- ▶ Play Musik
+--  Play Musik
 PlayButton.MouseButton1Click:Connect(function()
 	local id = TextBox.Text:match("%d+")
 	if id then
@@ -696,12 +774,12 @@ PlayButton.MouseButton1Click:Connect(function()
 	end
 end)
 
--- ■ Stop Musik
+--  Stop Musik
 StopButton.MouseButton1Click:Connect(function()
 	Sound:Stop()
 end)
 
--- 🖱 Drag Function (biar MusicFrame bisa digeser)
+--  Drag Function (biar MusicFrame bisa digeser)
 local UserInputService = game:GetService("UserInputService")
 
 local function dragify(frame)
