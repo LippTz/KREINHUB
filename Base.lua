@@ -423,83 +423,72 @@ local function AddDropdownSection(tab, title)
 	return sectionAPI
 end
 
--- 📌 Fungsi Tambahan: Slider
-function KreinHub:AddSlider(tab, text, min, max, default, callback)
-    local SliderFrame = Instance.new("Frame")
-    SliderFrame.Size = UDim2.new(1, -10, 0, 50)
-    SliderFrame.BackgroundTransparency = 1
-    SliderFrame.Parent = tab
+-- ✅ Fungsi Slider
+local function AddSlider(tab, text, min, max, default, callback)
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(0, 250, 0, 40)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    sliderFrame.BorderSizePixel = 0
+    sliderFrame.Parent = tab.Content
 
-    local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(1, -20, 0, 20)
-    Label.Position = UDim2.new(0, 10, 0, 0)
-    Label.BackgroundTransparency = 1
-    Label.Text = text .. " : " .. tostring(default)
-    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Label.Font = Enum.Font.GothamBold
-    Label.TextSize = 14
-    Label.TextXAlignment = Enum.TextXAlignment.Left
-    Label.Parent = SliderFrame
+    local label = Instance.new("TextLabel")
+    label.Text = text .. ": " .. tostring(default)
+    label.Size = UDim2.new(1, -20, 0, 20)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(200, 200, 200)
+    label.Font = Enum.Font.Code
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = sliderFrame
 
-    local SliderBar = Instance.new("Frame")
-    SliderBar.Size = UDim2.new(1, -20, 0, 8)
-    SliderBar.Position = UDim2.new(0, 10, 0, 25)
-    SliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    SliderBar.BorderSizePixel = 0
-    SliderBar.Parent = SliderFrame
-    Instance.new("UICorner", SliderBar)
+    local sliderBack = Instance.new("Frame")
+    sliderBack.Size = UDim2.new(1, -20, 0, 8)
+    sliderBack.Position = UDim2.new(0, 10, 0, 25)
+    sliderBack.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sliderBack.BorderSizePixel = 0
+    sliderBack.Parent = sliderFrame
 
-    local Fill = Instance.new("Frame")
-    Fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-    Fill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-    Fill.BorderSizePixel = 0
-    Fill.Parent = SliderBar
-    Instance.new("UICorner", Fill)
+    local sliderFill = Instance.new("Frame")
+    sliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
+    sliderFill.BorderSizePixel = 0
+    sliderFill.Parent = sliderBack
 
-    local DragButton = Instance.new("TextButton")
-    DragButton.Size = UDim2.new(0, 15, 0, 15)
-    DragButton.Position = UDim2.new((default - min) / (max - min), -7, 0.5, -7)
-    DragButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    DragButton.Text = ""
-    DragButton.AutoButtonColor = false
-    DragButton.Parent = SliderBar
-    Instance.new("UICorner", DragButton)
-
+    local dragging = false
     local UserInputService = game:GetService("UserInputService")
-    local Value = default
 
-    local function Update(inputX)
-        local barPos = SliderBar.AbsolutePosition.X
-        local barSize = SliderBar.AbsoluteSize.X
-        local percent = math.clamp((inputX - barPos) / barSize, 0, 1)
-
-        Value = math.floor(min + (max - min) * percent)
-        Fill.Size = UDim2.new(percent, 0, 1, 0)
-        DragButton.Position = UDim2.new(percent, -7, 0.5, -7)
-        Label.Text = text .. " : " .. tostring(Value)
-
+    local function update(input)
+        local pos = math.clamp((input.Position.X - sliderBack.AbsolutePosition.X) / sliderBack.AbsoluteSize.X, 0, 1)
+        local value = math.floor(min + (max - min) * pos)
+        sliderFill.Size = UDim2.new(pos, 0, 1, 0)
+        label.Text = text .. ": " .. tostring(value)
         if callback then
-            callback(Value)
+            callback(value)
         end
     end
 
-    DragButton.MouseButton1Down:Connect(function()
-        local moveConn, releaseConn
-        moveConn = UserInputService.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
-                Update(input.Position.X)
-            end
-        end)
-        releaseConn = UserInputService.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                moveConn:Disconnect()
-                releaseConn:Disconnect()
-            end
-        end)
+    sliderBack.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            update(input)
+        end
     end)
 
-    return SliderFrame
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            update(input)
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
 end
+
+
 
 -- âœ… Changelog Tab Internal (Tidak bisa diubah dari luar)
 do
@@ -823,12 +812,13 @@ dragify(MusicFrame) -- aktifkan drag
 
 
 
--- Exported API
+-- ✅ Export semua fungsi supaya bisa dipanggil di Loader.lua
 _G.KreinHub = {
-	CreateTab = CreateTab,
-	AddButton = AddButton,
-	AddToggle = AddToggle,
-	AddDropdown = AddDropdown,
-	AddDropdownSection = AddDropdownSection,
+    CreateTab = CreateTab,
+    AddButton = AddButton,
+    AddToggle = AddToggle,
+    AddDropdown = AddDropdown,
+    AddDropdownSection = AddDropdownSection,
+    AddSlider = AddSlider, -- <=== sudah ditambahkan bro
 }
 
